@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import { useState } from 'react';
 import ParametersPanel from './components/ParametersPanel';
 import Timeline from './components/Timeline';
 import DataPanel from './components/DataPanel';

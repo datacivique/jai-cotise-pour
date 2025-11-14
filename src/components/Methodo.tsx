@@ -1,4 +1,3 @@
-import React from 'react';
 import type { SalaryInfo } from './types';
 import { formatNum } from './Helpers';
 

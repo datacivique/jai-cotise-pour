@@ -23,8 +23,6 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           inflationContent,
           plafondContent,
           esperanceVieContent,
-          structureRetraiteContent,
-          partPensionContent,
         ] = await Promise.all([
           fetch('/1.107-PartageDeLaValeurAjoutéeBruteAPrixCourants.txt').then(r => r.text()),
           fetch('/3.201-DépensesEtRecettesDesAdministrationsPubliques(S13).txt').then(r => r.text()),
@@ -34,8 +32,6 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           fetch('/Inflation.txt').then(r => r.text()),
           fetch('/Plafond.txt').then(r => r.text()),
           fetch('/EsperanceVie.txt').then(r => r.text()),
-          fetch('/2.10-StructureDesRessourcesDuSystèmeDeRetraite.txt').then(r => r.text()),
-          fetch('/G1-PartDesPensionsDeRetraiteDansLePIB.txt').then(r => r.text()),
         ]);
 
         // Parser les données
@@ -46,8 +42,6 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
         const inflation = ParseCSV(inflationContent);
         const plafond = ParseCSV(plafondContent);
         const esperanceVie = ParseCSV(esperanceVieContent);
-        const structureRetraite = ParseCSV(structureRetraiteContent);
-        const partPension = ParseCSV(partPensionContent);
         const distribEqtp = ParseCSV(distribSalairesContent);
 
         const dataByYear = new Map<number, HistoricalData>();

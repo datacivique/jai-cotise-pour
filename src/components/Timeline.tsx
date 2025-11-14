@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { SimulationParams, ImportantDate, HistoricalData } from './types';
 import { formatNum, getAge0 } from './Helpers';
 
@@ -7,7 +7,7 @@ const Timeline: React.FC<{
   importantDates: ImportantDate[];
   historicalData: HistoricalData[];
 }> = ({ params, importantDates, historicalData }) => {
-  const { birthYear, retirementAge, lifeExpectancy } = params;
+  const { birthYear, lifeExpectancy } = params;
 
   const year0 = 1944;
 
