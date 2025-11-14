@@ -1,0 +1,34 @@
+
+DistribEffectifSalairesMensNetsEQTP2021.txt
+https://www.insee.fr/fr/statistiques/fichier/6799523/donnees_insee_premiere_n1938.xlsx
+Figure 1 - Salaires mensuels moyens et répartition des effectifs en équivalent temps plein (EQTP) en 2021 -> Salaire moyen
+Figure 2 - Distribution des salaires mensuels nets en équivalent temps plein (EQTP) en 2021
+
+Inflation.txt
+https://www.insee.fr/fr/statistiques/fichier/8282118/INFLATION.xlsx
+INFLATION : Inflation, indice base 100 en 1951
+
+Plafond.txt
+https://www.insee.fr/fr/statistiques/fichier/8282118/PLAFOND.xlsx
+PLAFOND : Plafond de la sécurité sociale et taux de cotisations sous plafond (en % du salaire brut)
+
+DepartRetraite.txt
+https://www.carpv.fr/wp-content/uploads/2015/03/Age_legal_depart_-retraite.pdf
+https://www.cleiss.fr/docs/regimes/regime_france3.html
+https://www.cprpf.fr/app/uploads/2023/11/DAT.pdf
+
+1.107-PartageDeLaValeurAjoutéeBruteAPrixCourants.txt
+3.201-DépensesEtRecettesDesAdministrationsPubliques(S13).txt
+https://www.insee.fr/fr/statistiques/8574832
+
+2.10-StructureDesRessourcesDuSystèmeDeRetraite.txt
+https://www.cor-retraites.fr/sites/default/files/2025-06/RA_2025_def_publi.pdf
+
+G1-PartDesPensionsDeRetraiteDansLePIB.txt
+https://drees.solidarites-sante.gouv.fr/sites/default/files/2025-07/Fiche%2010%20-%20Les%20masses%20financi%C3%A8res%20relatives%20aux%20pensions%20de%20retraite.pdf
+
+2021 : Part de la masse salariale perçue par les salariés les mieux rémunérés – top 10 % = 28.56
+https://catalogue-donnees.insee.fr/fr/explorateur/DS_DERA_PRIVE_SERIES_LONGUES
+
+TotalCotisationVieillesseVeuvage.txt
+https://www.statistiques-recherche.lassuranceretraite.fr/app/uploads/2020/11/T2_recueil-stat-2019.pdf

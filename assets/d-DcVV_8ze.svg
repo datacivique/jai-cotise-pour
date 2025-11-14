@@ -1,0 +1,12 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond arrondi bleu -->
+  <rect x="0" y="0" width="200" height="200" rx="40" ry="40" fill="#4A90C2"/>
+  
+  <!-- Lettre D principale en blanc -->
+  <path d="M 50 40 L 50 160 L 110 160 C 145 160 170 135 170 100 C 170 65 145 40 110 40 Z M 70 60 L 110 60 C 133 60 150 77 150 100 C 150 123 133 140 110 140 L 70 140 Z" fill="white"/>
+  
+  <!-- 3 barres de graphique croissantes à l'intérieur du D (blanches) -->
+  <rect x="82" y="115" width="12" height="15" fill="white"/>
+  <rect x="99" y="105" width="12" height="25" fill="white"/>
+  <rect x="116" y="90" width="12" height="40" fill="white"/>
+</svg>
