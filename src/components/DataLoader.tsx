@@ -14,6 +14,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        const base = import.meta.env.BASE_URL;
         const [
           masseSalarialeContent,
           depensesPubliquesContent,
@@ -24,14 +25,14 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           plafondContent,
           esperanceVieContent,
         ] = await Promise.all([
-          fetch('/1.107-PartageDeLaValeurAjoutéeBruteAPrixCourants.txt').then(r => r.text()),
-          fetch('/3.201-DépensesEtRecettesDesAdministrationsPubliques(S13).txt').then(r => r.text()),
-          fetch('/TotalCotisationVieillesseVeuvage.txt').then(r => r.text()),
-          fetch('/DepartRetraite.txt').then(r => r.text()),
-          fetch('/DistribEffectifSalairesMensNetsEQTP2021.txt').then(r => r.text()),
-          fetch('/Inflation.txt').then(r => r.text()),
-          fetch('/Plafond.txt').then(r => r.text()),
-          fetch('/EsperanceVie.txt').then(r => r.text()),
+          fetch(base + '1.107-PartageDeLaValeurAjoutéeBruteAPrixCourants.txt').then(r => r.text()),
+          fetch(base + '3.201-DépensesEtRecettesDesAdministrationsPubliques(S13).txt').then(r => r.text()),
+          fetch(base + 'TotalCotisationVieillesseVeuvage.txt').then(r => r.text()),
+          fetch(base + 'DepartRetraite.txt').then(r => r.text()),
+          fetch(base + 'DistribEffectifSalairesMensNetsEQTP2021.txt').then(r => r.text()),
+          fetch(base + 'Inflation.txt').then(r => r.text()),
+          fetch(base + 'Plafond.txt').then(r => r.text()),
+          fetch(base + 'EsperanceVie.txt').then(r => r.text()),
         ]);
 
         // Parser les données
