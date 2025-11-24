@@ -1,5 +1,5 @@
-import type { SalaryInfo } from './types';
-import { formatNum } from './Helpers';
+import { formatNum } from '../helpers/Common';
+import { txTcToEqtp, type SalaryInfo } from './types';
 
 export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryInfo }) {
   return (
@@ -16,11 +16,11 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
           <h3 className="text-lg font-semibold text-gray-900 mb-2">🎯 Objectif</h3>
           <p className="text-gray-700 leading-relaxed mb-3">
             Cette application analyse la <strong>soutenabilité du système de retraite par répartition</strong> (régime général) 
-            en comparant les cotisations et pensions d'un assuré exprimées en <strong>part de PMSS</strong> (Plafond Mensuel 
-            de la Sécurité Sociale).
+            en comparant les cotisations et pensions d'un assuré exprimées en <strong>part de salaire moyen</strong> (salaire moyen 
+            équivalent temps plein du secteur privé).
           </p>
           <p className="text-gray-700 leading-relaxed">
-            L’objectif est d’illustrer que lorsque la valeur des pensions perçues dépasse la somme des cotisations versées (en parts de PMSS), le système s’éloigne d’un équilibre purement <strong>assurantiel</strong> et repose davantage sur un transfert intergénérationnel croissant.
+            L'objectif est d'illustrer que lorsque la valeur des pensions perçues dépasse la somme des cotisations versées (en parts de salaire moyen), le système s'éloigne d'un équilibre purement <strong>assurantiel</strong> et repose davantage sur un transfert intergénérationnel croissant.
           </p>
         </div>
 
@@ -33,7 +33,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
           <ul className="space-y-2 text-gray-700">
             <li className="flex items-start gap-2">
               <span className="text-green-600 font-bold">✓</span>
-              <span><strong>Carrière complète au PMSS</strong> (alors que la plupart des salariés reste en-dessous du PMSS toute leur vie)</span>
+              <span><strong>Carrière complète au salaire moyen</strong> (alors que système ne prend en référence que les  25 meilleurs années)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-green-600 font-bold">✓</span>
@@ -59,7 +59,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
         <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-3">💼 Principe de calcul</h3>
           <p className="text-gray-700 leading-relaxed mb-3">
-            Nous modélisons un assuré rémunéré <strong>toute sa carrière au PMSS</strong> et mesurons :
+            Nous modélisons un assuré rémunéré <strong>toute sa carrière au salaire moyen EQTP</strong> (équivalent temps plein du secteur privé) et mesurons :
           </p>
           <div className="grid md:grid-cols-3 gap-4 mb-3">
             <div className="bg-green-50 rounded-lg p-4 border border-green-200">
@@ -68,7 +68,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
             </div>
             <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
               <div className="font-semibold text-purple-900 mb-1">🤝 Solidarité intra-générationnelle</div>
-              <div className="text-sm text-gray-700">Cotisations hors plafond</div>
+              <div className="text-sm text-gray-700">Cotisations hors plafond des hauts salaires</div>
             </div>
             <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
               <div className="font-semibold text-orange-900 mb-1">📈 Bénéfice de la croissance économique</div>
@@ -77,7 +77,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
           </div>
           <p className="text-gray-700 leading-relaxed">
             Ces contributions sont comparées aux <strong>prestations reçues durant la retraite</strong> (calculées sur 
-            l'espérance de vie moyenne de la génération), le tout exprimé en part de PMSS.
+            l'espérance de vie moyenne de la génération), le tout exprimé en part de salaire moyen.
           </p>
         </div>
 
@@ -97,8 +97,9 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
         <div className="border-t border-gray-200 pt-5">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">🤝 2. Solidarité intra-générationnelle</h3>
           <p className="text-gray-700 leading-relaxed mb-3">
-            Nous reconstituons la <strong>masse salariale brute plafonnée</strong> et celle <strong>au-dessus du PMSS</strong> pour estimer 
-            le ratio de contributions hors plafond.
+            Nous reconstituons la <strong>masse salariale brute soumise au plafond</strong> (ouvrant des droits) et 
+            celle <strong>au-dessus du PMSS</strong> (n'ouvrant pas de droits) pour estimer 
+            le ratio de contributions hors plafond, puis nous l'exprimons en part de salaire moyen.
           </p>
           
           <div className="bg-gray-50 rounded-lg p-4 mb-3">
@@ -106,9 +107,8 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
             <ol className="text-sm text-gray-700 space-y-2 list-decimal list-inside">
               <li>Distribution des salaires nets EQTP 2021 (<a href="https://www.insee.fr/fr/statistiques/fichier/6799523/donnees_insee_premiere_n1938.xlsx" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">INSEE - Figure 2</a>) → centiles au-dessus du PMSS</li>
               <li>Salaire moyen (<a href="https://www.insee.fr/fr/statistiques/fichier/6799523/donnees_insee_premiere_n1938.xlsx" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Figure 1</a>) → reconstitution de la dernière tranche</li>
-              <li>Masse salariale privée 2021 via <a href="https://www.insee.fr/fr/statistiques/8574832" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Comptes de la nation</a> (1.107 et 3.201) pour inclure primes, apprentissage, etc...</li>
-              <li>Ventilation équitable des primes sur chaque tranche</li>
-              <li>Obtient le ratio brut/net du <a href="https://www.insee.fr/fr/statistiques/fichier/8282118/PLAFOND.xlsx" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">PMSS 2021</a> ({formatNum(salaryInfo.ratioBrutNet, 2, "%")})</li>
+              <li>Masse salariale privée 2021 via <a href="https://www.insee.fr/fr/statistiques/8574832" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Comptes de la nation</a> (1.107, 1.109, 3.201) pour inclure les salaires des ménages</li>
+              <li>Obtient le ratio du salaire moyen brut vers net sur l'année ({formatNum(salaryInfo.ratioBrutNet, 2, "%")})</li>
               <li>Calcul des masses (×12 mois, ratio brut/net)</li>
             </ol>
           </div>
@@ -117,17 +117,17 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
             <div className="font-semibold text-purple-900 mb-2">📊 Résultats stabilisés (2021) :</div>
             <div className="grid md:grid-cols-2 gap-3 text-sm">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">72%</span>
-                <span className="text-gray-700">Masse salariale plafonnée / masse totale privée</span>
+                <span className="text-2xl">{formatNum(salaryInfo.partMasseSalMaxPmss*100, 0, "%")}</span>
+                <span className="text-gray-700">Masse salariale soumise au plafond / masse totale privée</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">41%</span>
+                <span className="text-2xl">{formatNum(salaryInfo.partMasseSalOverPmss*100, 0, "%")}</span>
                 <span className="text-gray-700">Masse au-dessus du PMSS / masse totale privée</span>
               </div>
             </div>
             <p className="text-xs text-gray-600 mt-2">
               Hypothèse : Ces proportions restent dans ces ordres de grandeur dans le temps, les inégalités salariales 
-              évoluant peu en comparaison de l'évolution du PMSS lui-même, d'autant que la part de contribution déplafonnée reste marginale.
+              évoluant peu en comparaison de l'évolution du salaire moyen lui-même, d'autant que la part de contribution déplafonnée reste marginale.
             </p>
           </div>
         </div>
@@ -136,7 +136,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
         <div className="border-t border-gray-200 pt-5">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">📈 3. Bénéfice de la croissance économique</h3>
           <p className="text-gray-700 leading-relaxed mb-2">
-            Comparaison année après année de la <strong>masse salariale privée en part de PMSS</strong> pour mesurer 
+            Comparaison année après année de la <strong>masse salariale privée en part de salaire moyen</strong> pour mesurer 
             les effets conjugués de :
           </p>
           <ul className="text-sm text-gray-700 space-y-1 pl-6 mb-3">
@@ -152,18 +152,28 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
               le système reste déficitaire pour l'assuré modélisé.
             </p>
           </div>
+          
+          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200 mt-3">
+            <p className="text-sm text-gray-700">
+              <strong>📊 Données salaire moyen EQTP :</strong> Salaires moyens équivalent temps plein disponibles depuis 1996 
+              (<a href="https://www.insee.fr/fr/statistiques/fichier/6799523/donnees_insee_premiere_n1938.xlsx" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">INSEE</a>). 
+              Pour la période 1950-1995, reconstitution à partir des salaires temps complet en appliquant le différentiel 
+              EQTP/TC de +{formatNum(txTcToEqtp*100, 2, "%")} observé de manière stable entre 1996 et aujourd'hui.
+            </p>
+          </div>
         </div>
 
         {/* Pensions */}
         <div className="border-t border-gray-200 pt-5">
           <h3 className="text-lg font-semibold text-gray-900 mb-3">💳 Calcul des pensions</h3>
           <p className="text-gray-700 leading-relaxed mb-2">
-            Les pensions sont indexées sur <strong>l'inflation</strong> (<a href="https://www.insee.fr/fr/statistiques/fichier/8282118/INFLATION.xlsx" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">INSEE</a>). 
-            Point de départ : <strong>50% du PMSS</strong> (retraite à taux plein).
+            Les pensions sont calculées selon la formule du régime général : <strong>50% du salaire moyen des 25 meilleures années</strong> 
+            (pour une carrière complète au salaire moyen, cela correspond à 50% du salaire moyen). Les pensions sont ensuite 
+            indexées sur <strong>l'inflation</strong> (<a href="https://www.insee.fr/fr/statistiques/fichier/8282118/INFLATION.xlsx" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">INSEE</a>).
           </p>
           <p className="text-gray-700 leading-relaxed mb-2">
-            Nous appliquons le différentiel <strong>inflation - croissance du PMSS</strong> pour conserver 
-            une prestation exprimée en part de PMSS constante dans le temps.
+            Nous appliquons le différentiel <strong>inflation - croissance du salaire moyen</strong> pour suivre 
+            l'évolution de la pension exprimée en part de salaire moyen au fil du temps.
           </p>
           <p className="text-sm text-gray-600 italic">
             Note : Les revalorisations exceptionnelles hors inflation sont exclues de cette analyse (approche conservatrice).
@@ -175,7 +185,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-5 border-l-4 border-blue-600">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">🔍 Indicateur de soutenabilité</h3>
             <p className="text-gray-700 leading-relaxed mb-3">
-              Nous obtenons deux totaux exprimés en <strong>parts de PMSS</strong> :
+              Nous obtenons deux totaux exprimés en <strong>parts de salaire moyen</strong> :
             </p>
             <div className="space-y-2 mb-3">
               <div className="flex items-center gap-2 text-gray-800">
@@ -189,7 +199,7 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
             </div>
             <div className="bg-white rounded-md p-4 border border-red-300">
               <p className="text-gray-800 font-medium mb-2">
-                💡 <strong>Lorsque la somme des pensions dépasse la somme des cotisations</strong> (en part de PMSS), 
+                💡 <strong>Lorsque la somme des pensions dépasse la somme des cotisations</strong> (en part de salaire moyen), 
                 cela révèle un <span className="text-red-600 font-semibold">déséquilibre structurel</span>.
               </p>
               <p className="text-gray-700 text-sm">
@@ -208,12 +218,17 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
             <div className="space-y-3 text-sm text-gray-700">
               <div>
                 <span className="font-semibold text-gray-900">• Analyse individuelle vs système collectif :</span> Cette 
-                approche mesure l'équilibre pour un profil type au PMSS. Le système par répartition fonctionne sur la mutualisation, 
+                approche mesure l'équilibre pour un profil type au salaire moyen. Le système par répartition fonctionne sur la mutualisation, 
                 mais si même un assuré médian ne peut être financé, le système global est insoutenable.
               </div>
               <div>
                 <span className="font-semibold text-gray-900">• Évolution des paramètres :</span> Les ratios 72%/41% 
                 de répartition des masses salariales sont basés sur les données 2021 et supposés stables dans le temps.
+              </div>
+              <div>
+                <span className="font-semibold text-gray-900">• Reconstitution historique du salaire moyen EQTP :</span> Les 
+                données EQTP sont disponibles depuis 1996. Pour la période 1950-1995, reconstitution basée sur les salaires 
+                temps complet avec un différentiel EQTP/TC de +{formatNum(txTcToEqtp*100, 2, "%")} observé de manière stable entre 1996 et aujourd'hui.
               </div>
               <div>
                 <span className="font-semibold text-gray-900">• Périmètre :</span> Régime général uniquement. 
@@ -237,11 +252,11 @@ export default function MethodologyDisplay({ salaryInfo }: { salaryInfo: SalaryI
           <h3 className="text-lg font-semibold text-gray-900 mb-2">⚠️ Interprétation des résultats</h3>
           <p className="text-gray-700 leading-relaxed">
             Cette méthodologie établit une <strong>borne inférieure de l'insoutenabilité</strong> : si le système est 
-            déficitaire dans ce scénario optimal (carrière complète au PMSS avec bénéfice de la croissance), il l'est 
+            déficitaire dans ce scénario optimal (carrière complète au salaire moyen avec bénéfice de la croissance), il l'est 
             nécessairement davantage dans la réalité où :
           </p>
           <ul className="mt-2 space-y-1 text-sm text-gray-700">
-            <li>• 70% des salariés cotisent en-dessous du PMSS</li>
+            <li>• 50% des salariés cotisent en-dessous du salaire moyen (par définition de la médiane)</li>
             <li>• Les carrières sont incomplètes (chômage, temps partiel)</li>
             <li>• Les prestations incluent des avantages supplémentaires (minimums, majorations)</li>
           </ul>

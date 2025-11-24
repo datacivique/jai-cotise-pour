@@ -9,7 +9,7 @@ export type SimulationParams = {
   // Projection
   ProjectionMasseSalarialeGrowth: number;
   ProjectionInflation: number;
-  ProjectionPmssGrowth: number;
+  ProjectionSalMoyGrowth: number;
   ProjectionLifeExpectancyGrowth: number;
 }
 
@@ -35,46 +35,54 @@ export type HistoricalData = {
   esperanceVie: number;
   txCnavPlafond: number;
   txCnavSalaire: number;
+  s11: number;
+  s12: number;
+  s13: number;
+  s14: number;
+  s15: number;
+  salMoyNetAnTc: number;
+
+  // Simu
+  salMensRefEnSalMoy: number;
 
   // calcul
-  dureeRetraiteCotise: number;
+  moisCotises: number;
+  moisPensionnes: number;
+  salMoyNetMens: number;
   ratioBrutNet: number;
   masseSalarialeBrutPrive: number;
   isHisto: boolean;
-  totalTauxCnavPlafond: number;
-  totalTauxCnavHorsPlafond: number;
-  totalCnavPlafondEnPmss: number;
-  totalCnavHorsPlafondEnPmss: number;
+  totalCnavPlafondEnSalMoy: number;
+  totalCnavHorsPlafondEnSalMoy: number;
   croissanceMasseSalarialePriveBrut: number;
   croissanceMasseSalarialePriveBrutCumule: number;
-  totalCnavPlafondEnPmssCroissMasSal: number;
-  totalCnavHorsPlafondEnPmssCroissMasSal: number;
+  totalCnavPlafondEnSalMoyCroissMasSal: number;
+  totalCnavHorsPlafondEnSalMoyCroissMasSal: number;
   age:number;
-  croissanceMasseSalarialeMoyenneSurPeriode:number;
-  inflationMoinsCroissancePmss:number;
-  pensionMensEnPmss:number;
-  pensionEnPmss:number;
+  inflationMoinsCroissanceSalMoy:number;
+  pensionMensEnSalMoy:number;
+  pensionEnSalMoy:number;
   dureeVieEnRetraite:number;
   t1:SimulationData;
   t2:SimulationData;
   t3:SimulationData;
   t4:SimulationData;
 
-  sumtotalCnavPlafondEnPmss:number;
-  sumtotalCnavHorsPlafondEnPmss:number;
-  sumtotalCnavPlafondEnPmssCroissMasSal:number;
-  sumtotalCnavHorsPlafondEnPmssCroissMasSal:number;
-  sumpensionMensEnPmss:number;
+  sumtotalCnavPlafondEnSalMoy:number;
+  sumtotalCnavHorsPlafondEnSalMoy:number;
+  sumtotalCnavPlafondEnSalMoyCroissMasSal:number;
+  sumtotalCnavHorsPlafondEnSalMoyCroissMasSal:number;
+  sumpensionMensEnSalMoy:number;
 }
 
 export type SimulationData = {
   isCotised:boolean;
   isRetired:boolean;
-  pensionEnPmss:number;
-  totalCnavPlafondEnPmss: number;
-  totalCnavHorsPlafondEnPmss: number;
-  totalCnavPlafondEnPmssCroissMasSal: number;
-  totalCnavHorsPlafondEnPmssCroissMasSal: number;
+  pensionEnSalMoy:number;
+  totalCnavPlafondEnSalMoy: number;
+  totalCnavHorsPlafondEnSalMoy: number;
+  totalCnavPlafondEnSalMoyCroissMasSal: number;
+  totalCnavHorsPlafondEnSalMoyCroissMasSal: number;
 }
 
 export type SalaryDistributionEqtp = {
@@ -82,22 +90,30 @@ export type SalaryDistributionEqtp = {
   max: number | null;
   effectif: number;
   moyen: number;
-  moyenPrime: number;
   centile: number;
-  masseBrutAnPmssMaxed: number,
-  masseBrutAnOverPmss: number;
+  masseBrutAnMaxPmss: number,
+  masseBrutAnOverPmss: number,
 }
 
 export type SalaryInfo = {
   ratioBrutNet: number;
+  effectifSalarieTotalPrive: number;
+  salaireMoyTotalPrive: number;
   effectifSalarie: number;
-  salaireMensMoyPrime: number;
   centileOverPmss: number;
+  masseSalMaxPmss: number;
+  masseSalOverPmss: number;
+  partMasseSalMaxPmss: number;
   partMasseSalOverPmss: number;
-  partMasseSalOverPmssIgnored: number;
 }
 
-export const salaireMensMoy2021: number = 2524;
-// export const ratioBrutNet: number = .78;
+export const salaireMensMoyBrut2021: number = 3321;
+export const salaireMensMoyNet2021: number = 2524;
 export const salaireMensNetMin: number = 1000;
 export const partMasseSalTop10_2021: number = 28.56;
+export const txSalMensToPmss: number = 0.0011;
+export const txTcToEqtp: number = 0.00982942821823;
+
+export const projectionBaseSalMoy: number = 1.5;
+export const projectionBaseInflation: number = 1.6;
+export const projectionBasePib: number = 3;

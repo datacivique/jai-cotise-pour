@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { salaireMensMoy2021, type HistoricalData, type SalaryDistributionEqtp, type SalaryInfo } from './types';
-import { formatNum } from './Helpers';
+import { salaireMensMoyNet2021, type HistoricalData, type SalaryDistributionEqtp, type SalaryInfo } from './types';
+import { formatNum } from '../helpers/Common';
 import MethodologyDisplay from './Methodo';
 
 const DataPanel: React.FC<{
@@ -99,8 +99,9 @@ const DataPanel: React.FC<{
                     <th className={`px-3 py-2 text-right text-${activDataColor}-700`}>Inflation</th>
                     <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Masse sal. brut (Mds€)</th>
                     <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Masse sal. pub. brut (Mds€)</th>
-                    <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>PMSS Brut (€)</th>
-                    <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>PMSS Net (€)</th>
+                    {/* <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Emploi ménages (milliers)</th> */}
+                    <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Sal. Moy. Net TC (€/an)</th>
+                    <th className={`px-2 py-2 text-right font-semibold text-blue-700`}>Sal. Moy. Net Eqtp (€/mens)</th>
                     <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Tx Cnav Plaf. (%)</th>
                     <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Tx Cnav Déplaf. (%)</th>
                     <th className={`px-2 py-2 text-right font-semibold text-${activDataColor}-700`}>Espérance de vie (ans)</th>
@@ -116,8 +117,9 @@ const DataPanel: React.FC<{
                       <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.inflation,1)}</td>
                       <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.masseSalarialeBrut,1)}</td>
                       <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.masseSalarialePubliqueBrut,1)}</td>
-                      <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.pmss)}</td>
-                      <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.pmssNet)}</td>
+                      {/* <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.s14,1)}</td> */}
+                      <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.salMoyNetAnTc)}</td>
+                      <td className={`px-2 py-2 text-right text-blue-700`}>{formatNum(data.salMoyNetMens)}</td>
                       <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.txCnavPlafond,2)}</td>
                       <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.txCnavSalaire,2)}</td>
                       <td className={`px-2 py-2 text-right text-${activDataColor}-700`}>{formatNum(data.esperanceVie,1)}</td>
@@ -140,7 +142,6 @@ const DataPanel: React.FC<{
                     <th className="px-3 py-2 text-right font-semibold text-gray-700">Effectif</th>
                     <th className="px-3 py-2 text-right font-semibold text-blue-700">Centile</th>
                     <th className="px-3 py-2 text-right font-semibold text-blue-700">Net Mens. Ref</th>
-                    <th className="px-3 py-2 text-right font-semibold text-blue-700">Net Mens. +Prime</th>
                     <th className="px-3 py-2 text-right font-semibold text-blue-700">&gt; Pmss  Net ({pmss2021}€)</th>
                     <th className="px-3 py-2 text-right font-semibold text-blue-700">Masse Sal. Brut Plaf. Pmss</th>
                     <th className="px-3 py-2 text-right font-semibold text-blue-700">Masse Sal. Brut &gt;Pmss</th>
@@ -165,13 +166,10 @@ const DataPanel: React.FC<{
                             {formatNum(range.moyen,0,"€")}
                           </td>
                           <td className={`px-3 py-2 text-right ${isOverPmss?"text-orange-600":"text-green-600"}`}>
-                            {formatNum(range.moyenPrime,0,"€")}
-                          </td>
-                          <td className={`px-3 py-2 text-right ${isOverPmss?"text-orange-600":"text-green-600"}`}>
                             {isOverPmss?"oui":"non"}
                           </td>
                           <td className={`px-3 py-2 text-right ${isOverPmss?"text-orange-600":"text-green-600"}`}>
-                            {formatNum(range.masseBrutAnPmssMaxed,2, "Mds €")}
+                            {formatNum(range.masseBrutAnMaxPmss,2, "Mds €")}
                           </td>
                           <td className={`px-3 py-2 text-right ${isOverPmss?"text-orange-600":"text-green-600"}`}>
                             {formatNum(range.masseBrutAnOverPmss,2, "Mds €")}
@@ -180,27 +178,44 @@ const DataPanel: React.FC<{
                       );
                     });
 
-                    // Ajout D10
+                    // Ajout Total
                     rows.push(
                       <tr key="total" className="border-t border-gray-200 bg-gray-100 font-semibold">
                         <td className="px-3 py-2">Total</td>
                         <td className="px-3 py-2 text-right">{formatNum(salaryInfo.effectifSalarie)}</td>
                         <td className="px-3 py-2 text-right">100.0</td>
                         <td className="px-3 py-2 text-right">
-                          {formatNum(salaireMensMoy2021,0, "€")}
-                        </td>
-                        <td className="px-3 py-2 text-right text-orange-600">
-                          {formatNum(salaryInfo.salaireMensMoyPrime,0, "€")}
+                          {formatNum(salaireMensMoyNet2021,0, "€")}
                         </td>
                         <td className="px-3 py-2 text-right text-orange-600">{formatNum(100-salaryInfo.centileOverPmss,1)}</td>
                         <td className="px-3 py-2 text-right text-orange-600">
-                          {formatNum(salaryInfo.partMasseSalOverPmssIgnored*masseSalPriv2021,2, "Mds €")}
+                          {formatNum(salaryInfo.masseSalMaxPmss,2, "Mds €")}
+                        </td>
+                        <td className="px-3 py-2 text-right text-orange-600">
+                          {formatNum(salaryInfo.masseSalOverPmss,2, "Mds €")}
+                        </td>
+                      </tr>
+                    );
+
+                    // Ajout Total
+                    rows.push(
+                      <tr key="totalMenage" className="border-t border-gray-200 bg-gray-100 font-semibold">
+                        <td className="px-3 py-2">Total +ménages</td>
+                        <td className="px-3 py-2 text-right">{formatNum(salaryInfo.effectifSalarieTotalPrive)}</td>
+                        <td className="px-3 py-2 text-right">-</td>
+                        <td className="px-3 py-2 text-right">
+                          {formatNum(salaryInfo.salaireMoyTotalPrive,0, "€")}
+                        </td>
+                        <td className="px-3 py-2 text-right text-orange-600">{formatNum(100-salaryInfo.centileOverPmss,1)}</td>
+                        <td className="px-3 py-2 text-right text-orange-600">
+                          {formatNum(salaryInfo.partMasseSalMaxPmss*masseSalPriv2021,2, "Mds €")}
                         </td>
                         <td className="px-3 py-2 text-right text-orange-600">
                           {formatNum(salaryInfo.partMasseSalOverPmss*masseSalPriv2021,2, "Mds €")}
                         </td>
                       </tr>
                     );
+
                     return rows;
                   })()}
                 </tbody>

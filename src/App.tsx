@@ -2,9 +2,10 @@ import { useState } from 'react';
 import ParametersPanel from './components/ParametersPanel';
 import Timeline from './components/Timeline';
 import DataPanel from './components/DataPanel';
-import type { SalaryInfo, HistoricalData, ImportantDate, SalaryDistributionEqtp, SimulationParams } from './components/types';
+import { type SalaryInfo, type HistoricalData, type ImportantDate, type SalaryDistributionEqtp, type SimulationParams, projectionBasePib, projectionBaseInflation, projectionBaseSalMoy } from './components/types';
 import DataLoader from './components/DataLoader';
-import { GetSalaryInfo, UpdateHistoricalData } from './components/Helpers';
+import { GetSalaryInfo } from './helpers/SalaryInfo';
+import { UpdateHistoricalData } from './helpers/HistoricalData';
 
 const RetirementSimulation = () => {
   const [params, setParams] = useState<SimulationParams>({
@@ -16,9 +17,9 @@ const RetirementSimulation = () => {
     indexationInflation: 0,
     keepParams: false,
   // Projection
-    ProjectionMasseSalarialeGrowth: 1.5,
-    ProjectionInflation: 2,
-    ProjectionPmssGrowth: 1,
+    ProjectionMasseSalarialeGrowth: projectionBasePib,
+    ProjectionInflation: projectionBaseInflation,
+    ProjectionSalMoyGrowth: projectionBaseSalMoy,
     ProjectionLifeExpectancyGrowth: 2,
   });
 
@@ -28,11 +29,14 @@ const RetirementSimulation = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [salaryInfo, setSalaryInfo] = useState<SalaryInfo>({
     ratioBrutNet: 0,
+    effectifSalarieTotalPrive: 0,
+    salaireMoyTotalPrive: 0,
     effectifSalarie: 0,
     centileOverPmss: 0,
+    masseSalMaxPmss: 0,
+    masseSalOverPmss:0,
+    partMasseSalMaxPmss: 0,
     partMasseSalOverPmss: 0,
-    partMasseSalOverPmssIgnored: 0,
-    salaireMensMoyPrime: 0,
   });
   
   const workStartYear = params.birthYear + params.retirementAge - (params.cotisationDuration/4);
@@ -75,7 +79,7 @@ const RetirementSimulation = () => {
         ProjectionInflation: params.ProjectionInflation,
         ProjectionLifeExpectancyGrowth: params.ProjectionLifeExpectancyGrowth,
         ProjectionMasseSalarialeGrowth: params.ProjectionMasseSalarialeGrowth,
-        ProjectionPmssGrowth: params.ProjectionPmssGrowth,
+        ProjectionSalMoyGrowth: params.ProjectionSalMoyGrowth,
       } as SimulationParams;
       if (params.keepParams) {
         p.retirementAge = params.retirementAge;
@@ -100,10 +104,10 @@ const RetirementSimulation = () => {
 <div className="bg-yellow-50 rounded-lg p-5 border-l-4 border-yellow-500">
   <h3 className="text-lg font-semibold text-gray-900 mb-2">🔍 La retraite en répartition ? Qui paie, et combien...</h3>
   <p className="text-gray-700 leading-relaxed mb-3">
-    Cette application propose d’explorer la <strong>soutenabilité du système de retraite</strong> en comparant, 
-    sur l’ensemble d’une vie, les <strong>cotisations versées</strong> et les 
+    Cette application propose d'explorer la <strong>soutenabilité du système de retraite</strong> en comparant, 
+    sur l'ensemble d'une vie, les <strong>cotisations versées</strong> et les 
     <strong> pensions perçues</strong>, exprimées en parts du 
-    <strong> Plafond Mensuel de la Sécurité Sociale (PMSS)</strong>.
+    <strong> salaire moyen</strong>.
   </p>
 
   <div className="mt-4 bg-white rounded-md p-3 border-l-2 border-yellow-600">

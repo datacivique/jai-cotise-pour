@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SimulationParams, ImportantDate, HistoricalData } from './types';
-import { formatNum, getAge0 } from './Helpers';
+import { createHistoricalData, formatNum } from '../helpers/Common';
+import { calculateTRI } from '../helpers/tri';
 
 const Timeline: React.FC<{
   params: SimulationParams;
@@ -27,27 +28,36 @@ const Timeline: React.FC<{
 
   // Trouver la valeur max globale pour une échelle commune (en PMSS)
   const allValues = historicalData.flatMap(d => [
-    (d.sumtotalCnavPlafondEnPmss || 0) + 
-    (d.sumtotalCnavHorsPlafondEnPmss || 0) + 
-    (d.sumtotalCnavPlafondEnPmssCroissMasSal || 0) + 
-    (d.sumtotalCnavHorsPlafondEnPmssCroissMasSal || 0),
-    d.sumpensionMensEnPmss || 0
+    (d.sumtotalCnavPlafondEnSalMoy || 0) + 
+    (d.sumtotalCnavHorsPlafondEnSalMoy || 0) + 
+    (d.sumtotalCnavPlafondEnSalMoyCroissMasSal || 0) + 
+    (d.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal || 0),
+    d.sumpensionMensEnSalMoy || 0
   ]);
   const maxValue = Math.max(...allValues);
   
   // Pixels par unité de PMSS
   const pixelsPerPmss = 150 / maxValue;
 
-  const age0 = getAge0(historicalData);
+    const age0 = historicalData.find(d => d.age === 0)||createHistoricalData();
 
             const propTravail = (age0.ageRetraite - (age0.dureeCotisation/4)) / age0.esperanceVie;
-            const perso = age0.sumtotalCnavPlafondEnPmss;
-            const riche = age0.sumtotalCnavHorsPlafondEnPmss;
-            const demo = age0.sumtotalCnavHorsPlafondEnPmssCroissMasSal+age0.sumtotalCnavPlafondEnPmssCroissMasSal-(age0.sumtotalCnavPlafondEnPmss+age0.sumtotalCnavHorsPlafondEnPmss);
-            const next = age0.sumpensionMensEnPmss-(perso+riche+demo);
-            const transfert = riche+next;
-            const dureeCotisee = age0.dureeRetraiteCotise;
-            const dureeNonCotisee = age0.dureeVieEnRetraite - age0.dureeRetraiteCotise;
+            const perso = age0.sumtotalCnavPlafondEnSalMoy;
+            const riche = age0.sumtotalCnavHorsPlafondEnSalMoy;
+            const demo = age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal-(perso+riche);
+            const next = age0.sumpensionMensEnSalMoy-(perso+riche+demo);
+
+            const persoPerc = perso/age0.sumpensionMensEnSalMoy;
+            const richePerc = riche/age0.sumpensionMensEnSalMoy;
+            const demoPerc = demo/age0.sumpensionMensEnSalMoy;
+            const nextPerc = next/age0.sumpensionMensEnSalMoy;
+
+            const dureeCotisee = age0.dureeVieEnRetraite*persoPerc;
+            const dureeFinancee = age0.dureeVieEnRetraite*(richePerc+demoPerc+persoPerc);
+            const dureeNonFinancee = age0.dureeVieEnRetraite*nextPerc;
+// console.log(age0)
+
+const triPerso = calculateTRI(historicalData, true);
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200">
@@ -65,12 +75,12 @@ const Timeline: React.FC<{
             if (!currentData) return null;
             
             // Calculer les hauteurs des barres
-            const cotisPlafond = currentData.sumtotalCnavPlafondEnPmss || 0;
-            const cotisHorsPlafond = currentData.sumtotalCnavHorsPlafondEnPmss || 0;
-            const cotisDemographie = (currentData.sumtotalCnavPlafondEnPmssCroissMasSal || 0) + 
-                                     (currentData.sumtotalCnavHorsPlafondEnPmssCroissMasSal || 0) - 
-                                     cotisPlafond;
-            const pension = currentData.sumpensionMensEnPmss || 0;
+            const cotisPlafond = currentData.sumtotalCnavPlafondEnSalMoy || 0;
+            const cotisHorsPlafond = currentData.sumtotalCnavHorsPlafondEnSalMoy || 0;
+            const cotisDemographie = (currentData.sumtotalCnavPlafondEnSalMoyCroissMasSal || 0) + 
+                                     (currentData.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal || 0) - 
+                                     (cotisPlafond+cotisHorsPlafond);
+            const pension = currentData.sumpensionMensEnSalMoy || 0;
             // console.log(year,cotisPlafond,cotisHorsPlafond)
             
             const isRetired = currentData.t1.isRetired || currentData.t4.isRetired;
@@ -218,19 +228,19 @@ const Timeline: React.FC<{
           Contributions :
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-blue-500"></div>
-            <span className="text-blue-800 italic">Personelle ({formatNum(perso*100/age0.sumpensionMensEnPmss, 2, "%")})</span>
+            <span className="text-blue-800 italic">Personelle ({formatNum(persoPerc*100, 2, "%")})</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-purple-400"></div>
-            <span className="text-purple-600 italic">Croissance économique ({formatNum(demo*100/age0.sumpensionMensEnPmss, 2, "%")})</span>
+            <span className="text-purple-600 italic">Croissance économique ({formatNum(demoPerc*100, 2, "%")})</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-orange-400"></div>
-            <span className="text-orange-800 italic">Hauts revenus ({formatNum(riche*100/age0.sumpensionMensEnPmss, 2, "%")})</span>
+            <span className="text-orange-800 italic">Hauts revenus ({formatNum(richePerc*100, 2, "%")})</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-red-500"></div>
-            <span className="text-red-800 italic">Génération suivante ({formatNum(next*100/age0.sumpensionMensEnPmss, 2, "%")})</span>
+            <span className="text-red-800 italic">Génération suivante ({formatNum(nextPerc*100, 2, "%")})</span>
           </div>
         </div>
         
@@ -241,26 +251,26 @@ const Timeline: React.FC<{
             return (
               <div  key={`summary-${year}`}>
                 {currentData.age == 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-5 text-sm">
           <div className="p-3 bg-green-50 rounded-lg">
-            <div className="text-green-800">Temps de travail dans la vie</div>
+            <div className="text-green-800 text-center">Temps de travail dans la vie</div>
             <div className="font-semibold text-green-600 text-center" style={{marginTop: "5px"}}>{(100*propTravail).toFixed(2)}%</div>
           </div>
           <div className="p-3 bg-blue-50 rounded-lg">
-            <div className="text-blue-800">Durée de retraite financée</div>
+            <div className="text-blue-800 text-center">Retraite cotisée</div>
             <div className="font-semibold text-blue-600 text-center" style={{marginTop: "5px"}}>{(dureeCotisee).toFixed(2)} ans</div>
           </div>
-          <div className="p-3 bg-orange-50 rounded-lg">
-            <div className="text-orange-800">Durée de retraite non financée</div>
-            <div className="font-semibold text-orange-600 text-center" style={{marginTop: "5px"}}>{(dureeNonCotisee).toFixed(2)} ans</div>
+          <div className="p-3 bg-purple-50 rounded-lg">
+            <div className="text-purple-800 text-center">Retraite financée</div>
+            <div className="font-semibold text-purple-600 text-center" style={{marginTop: "5px"}}>{(dureeFinancee).toFixed(2)} ans</div>
           </div>
-          {/* <div className="p-3 bg-purple-50 rounded-lg">
-            <div className="text-purple-800">Contribution personnelle</div>
-            <div className="font-semibold text-purple-600 text-center" style={{marginTop: "5px"}}>{(100*perso/age0.sumpensionMensEnPmss).toFixed(2)}%</div>
-          </div> */}
+          <div className="p-3 bg-orange-50 rounded-lg">
+            <div className="text-orange-800 text-center">Retraite non financée</div>
+            <div className="font-semibold text-orange-600 text-center" style={{marginTop: "5px"}}>{(dureeNonFinancee).toFixed(2)} ans</div>
+          </div>
           <div className="p-3 bg-red-50 rounded-lg">
-            <div className="text-red-800">Transfert de niveau de vie</div>
-            <div className="font-semibold text-red-600 text-center" style={{marginTop: "5px"}}>{(100*transfert/age0.sumpensionMensEnPmss).toFixed(2)}%</div>
+            <div className="text-red-800 text-center">TRI</div>
+            <div className="font-semibold text-red-600 text-center" style={{marginTop: "5px"}}>{(triPerso*100).toFixed(2)}%</div>
           </div>
         </div>
                 )}
