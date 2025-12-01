@@ -257,21 +257,42 @@ const triPerso = calculateTRI(historicalData, true);
             <div className="font-semibold text-green-600 text-center" style={{marginTop: "5px"}}>{(100*propTravail).toFixed(2)}%</div>
           </div>
           <div className="p-3 bg-blue-50 rounded-lg">
-            <div className="text-blue-800 text-center">Retraite cotisée</div>
-            <div className="font-semibold text-blue-600 text-center" style={{marginTop: "5px"}}>{(dureeCotisee).toFixed(2)} ans</div>
+            <div className="text-blue-800 text-center">Total cotisé</div>
+            <div className="font-semibold text-blue-600 text-center" style={{marginTop: "5px"}}>
+              {formatNum(age0.sumtotalCnavPlafondEnSalMoy, 0, "salaires moyens")}<br/>
+              <i>({(dureeCotisee).toFixed(2)} ans de retraite)</i>
+            </div>
           </div>
           <div className="p-3 bg-purple-50 rounded-lg">
-            <div className="text-purple-800 text-center">Retraite financée</div>
-            <div className="font-semibold text-purple-600 text-center" style={{marginTop: "5px"}}>{(dureeFinancee).toFixed(2)} ans</div>
+            <div className="text-purple-800 text-center">Total financé</div>
+            <div className="font-semibold text-purple-600 text-center" style={{marginTop: "5px"}}>
+              {formatNum(age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal, 0, "salaires moyens")}<br/>
+              <i>({(dureeFinancee).toFixed(2)} ans de retraite)</i>
+            </div>
           </div>
           <div className="p-3 bg-orange-50 rounded-lg">
-            <div className="text-orange-800 text-center">Retraite non financée</div>
-            <div className="font-semibold text-orange-600 text-center" style={{marginTop: "5px"}}>{(dureeNonFinancee).toFixed(2)} ans</div>
+            <div className="text-orange-800 text-center">Total obtenu</div>
+            <div className="font-semibold text-orange-600 text-center" style={{marginTop: "5px"}}>
+              {formatNum(age0.sumpensionMensEnSalMoy, 0, "salaires moyens")}<br/>
+              <i>({(age0.dureeVieEnRetraite).toFixed(2)} ans de retraite)</i>
+            </div>
           </div>
           <div className="p-3 bg-red-50 rounded-lg">
-            <div className="text-red-800 text-center">TRI</div>
-            <div className="font-semibold text-red-600 text-center" style={{marginTop: "5px"}}>{(triPerso*100).toFixed(2)}%</div>
+            <div className="text-red-800 text-center">Total ponctionné</div>
+            <div className="font-semibold text-red-600 text-center" style={{marginTop: "5px"}}>
+              {formatNum(next, 0, "salaires moyens")}<br/>
+              <i>({(dureeNonFinancee).toFixed(2)} ans de retraite)</i>
+            </div>
           </div>
+          <p className="md:col-span-5 italic">
+  (*) Cette simulation concerne une personne fictive ayant toujours perçu le salaire moyen et validé toutes ses annuités. 
+  Le <span className="text-blue-600">“total cotisé”</span> représente l’ensemble des cotisations réellement versées par le salarié (en salaires moyens), 
+  le <span className="text-purple-600">“total financé”</span> correspond à l’apport de la croissance démographique et économique au système par répartition, 
+  le <span className="text-orange-600">“total obtenu”</span> est le total des pensions perçues sur toute la retraite, 
+  et le <span className="text-red-600">“total ponctionné”</span> mesure l’effort de solidarité fourni par la génération active pour couvrir la part non financée par les cotisations du retraité.
+</p>
+
+          <p className="md:col-span-5">Cela correspond pour cette génération à un taux implicite de rendement <span className="text-green-600">TRI = {(triPerso*100).toFixed(2)}%</span></p>
         </div>
                 )}
               </div>
