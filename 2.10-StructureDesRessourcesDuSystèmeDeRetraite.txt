@@ -1,22 +1,41 @@
-Année;Cotisations sociales hors contribution déquilibre;ITAF et prises en charge État;Transferts depuis organismes extérieurs;Contribution déquilibre au régime de la FPE;Subventions déquilibre versées par lÉtat aux régimes spéciaux;Autres produits
-2004;66;7;8;2;2;15
-2005;65;8;8;3;2;14
-2006;65;10;6;3;2;14
-2007;64;10;5;4;2;15
-2008;66;11;6;2;3;12
-2009;66;10;5;3;2;14
-2010;68;10;5;2;3;12
-2011;67;12;5;1;3;12
-2012;65;12;5;2;3;13
-2013;65;12;6;2;3;12
-2014;65;12;6;2;3;12
-2015;65;12;6;2;3;12
-2016;66;12;6;1;3;12
-2017;67;11;7;1;2;12
-2018;66;11;7;2;2;12
-2019;66;13;5;2;2;12
-2020;66;14;5;0;2;13
-2021;66;13;5;2;2;12
-2022;66;14;5;1;2;12
-2023;65;14;5;2;2;12
-2024;65;14;5;2;2;12
+pctAvancement;ouvrier;employe;cadre;profIntermediaire;eventOuvrier;eventEmploye;eventCadre;eventProfIntermediaire
+0.025;0.60;0.50;1.00;0.80;Entrée comme manœuvre, bas salaire;Début comme employé administratif;Premier poste de cadre junior;Début comme technicien/agent de maîtrise junior
+0.05;0.62;0.52;1.05;0.82;;;;
+0.075;0.64;0.54;1.10;0.84;;;;
+0.10;0.66;0.56;1.12;0.86;;;;
+0.125;0.68;0.58;1.15;0.88;Obtention qualification de base;Début de polyvalence;Première petite promotion;Prise de responsabilités limitées
+0.15;0.70;0.60;1.20;0.90;;;;
+0.175;0.71;0.62;1.25;0.93;;;;
+0.20;0.72;0.64;1.30;0.95;;;;
+0.225;0.73;0.66;1.32;0.97;;;;
+0.25;0.74;0.68;1.35;1.00;Atteinte pleine compétence métier;Poste stabilisé;Accès à un rôle de management junior;Passage agent de maîtrise confirmé
+0.275;0.75;0.70;1.38;1.03;;;;
+0.30;0.76;0.72;1.40;1.05;;;;
+0.325;0.77;0.73;1.45;1.07;;;;
+0.35;0.78;0.74;1.50;1.10;;;;
+0.375;0.79;0.75;1.55;1.12;Pleine maîtrise, référence atelier;Responsabilités administratives élargies;Cadre confirmé;Encadrement technique élargi
+0.40;0.80;0.76;1.60;1.15;;;;
+0.425;0.81;0.77;1.65;1.18;;;;
+0.45;0.82;0.78;1.70;1.20;;;;
+0.475;0.83;0.79;1.75;1.22;;;;
+0.50;0.85;0.80;1.80;1.25;Pic de carrière ouvrier;Poste de responsable d’équipe;Poste stratégique senior;Tech lead / maîtrise avancée
+0.525;0.84;0.79;1.82;1.24;;;;
+0.55;0.83;0.78;1.84;1.23;;;;
+0.575;0.82;0.77;1.85;1.22;;;;
+0.60;0.81;0.76;1.88;1.21;;;;
+0.625;0.80;0.75;1.90;1.20;Début d'usure, stagnation;Restructuration interne;Bonus plus faible / stagnation;Responsabilité transversale plus faible
+0.65;0.79;0.74;1.88;1.18;;;;
+0.675;0.78;0.73;1.85;1.17;;;;
+0.70;0.77;0.72;1.82;1.16;;;;
+0.725;0.76;0.71;1.80;1.15;;;;
+0.75;0.75;0.70;1.78;1.14;Début de pénibilité accrue;Tâches moins exigeantes;Réduction de périmètre;Moins de projets techniques
+0.775;0.74;0.69;1.75;1.13;;;;
+0.80;0.73;0.68;1.72;1.12;;;;
+0.825;0.72;0.67;1.70;1.11;;;;
+0.85;0.71;0.66;1.68;1.10;;;;
+0.875;0.70;0.65;1.65;1.08;Changement de poste moins contraignant;Poste administratif allégé;Moins de pression hiérarchique;Fin des responsabilités d’encadrement
+0.90;0.69;0.64;1.62;1.07;;;;
+0.925;0.68;0.63;1.58;1.05;;;;
+0.95;0.67;0.62;1.55;1.03;;;;
+0.975;0.66;0.61;1.52;1.02;;;;
+1.00;0.65;0.60;1.50;1.00;Fin de carrière progressive;Préparation retraite;Fin de carrière sereine;Transition vers soutien / expertise occasionnelle
