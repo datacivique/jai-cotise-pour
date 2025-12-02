@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ParametersPanel from './components/ParametersPanel';
+// import Profil from './components/profil';
 import Timeline from './components/Timeline';
 import DataPanel from './components/DataPanel';
-import { type SalaryInfo, type HistoricalData, type ImportantDate, type SalaryDistributionEqtp, type SimulationParams, projectionBasePib, projectionBaseInflation, projectionBaseSalMoy } from './components/types';
+import { type SalaryInfo, type HistoricalData, type ImportantDate, type SalaryDistributionEqtp, type SimulationParams, projectionBasePib, projectionBaseInflation, projectionBaseSalMoy, type ProfilType } from './components/types';
 import DataLoader from './components/DataLoader';
 import { GetSalaryInfo } from './helpers/SalaryInfo';
 import { UpdateHistoricalData } from './helpers/HistoricalData';
+import { GetProfils } from './helpers/ProfilType';
+import ProfilChart from './components/profil';
 
 const RetirementSimulation = () => {
   const [params, setParams] = useState<SimulationParams>({
@@ -38,6 +41,21 @@ const RetirementSimulation = () => {
     partMasseSalMaxPmss: 0,
     partMasseSalOverPmss: 0,
   });
+  const [profilsBase, setprofilsBase] = useState<ProfilType[]>([]);
+  const [profils, setprofils] = useState<ProfilType[]>([]);
+  const [profilId, setProfilId] = useState<number | null>(null);
+
+  useEffect(() => {
+     const urlParams = new URLSearchParams(window.location.search);
+     const profilParam = urlParams.get('profil');
+     
+     if (profilParam !== null) {
+       const id = parseInt(profilParam, 10);
+       if (!isNaN(id)) {
+         setProfilId(id);
+       }
+     }
+   }, []);
   
   const workStartYear = params.birthYear + params.retirementAge - (params.cotisationDuration/4);
   const retirementYear = params.birthYear + params.retirementAge;
@@ -52,6 +70,7 @@ const RetirementSimulation = () => {
   const handleDataLoaded = (data: {
     historicalData: HistoricalData[];
     salaryDistributionEqtp: SalaryDistributionEqtp[];
+    profilsBase: ProfilType[];
     dataByYear: Map<number, HistoricalData>;
   }) => {
     var salaryInfo = GetSalaryInfo(data.salaryDistributionEqtp, data.historicalData);
@@ -61,6 +80,9 @@ const RetirementSimulation = () => {
     setSalaryDistributionEqtp(data.salaryDistributionEqtp);
     setDataByYear(data.dataByYear);
     setIsLoading(false);
+    setprofilsBase(data.profilsBase);
+    setprofils(GetProfils(data.profilsBase, data.historicalData));
+      console.log(data.historicalData)
   };
 
   const handleParamsChange = (newParams: Partial<SimulationParams>) => {
@@ -89,14 +111,29 @@ const RetirementSimulation = () => {
       UpdateHistoricalData(historicalData, p, salaryInfo);
       p.lifeExpectancy = c.dureeVieEnRetraite + p.retirementAge;
       setParams(p);
+      setprofils(GetProfils(profilsBase, historicalData));
     }
     else
     {
       const updatedParams = { ...params, ...newParams };
       UpdateHistoricalData(historicalData, updatedParams, salaryInfo);
       setParams(updatedParams);
+      if (newParams.cotisationDuration != undefined) {
+        setprofils(GetProfils(profilsBase, historicalData));
+      }
     }
   };
+
+  const GetProfil = (id:number) => {
+    // console.log(profils, id, profils[id])
+    if (profils[id] != undefined) {
+      return profils[id];
+    }
+    return {
+      name: "string",
+      salaires: [],
+    }
+  }
 
   return (
     <div className="w-full min-w-4xl max-w-6xl mx-auto p-6 space-y-6 bg-gray-50 min-h-screen">
@@ -122,6 +159,9 @@ const RetirementSimulation = () => {
       <DataLoader onDataLoaded={handleDataLoaded} />
 
       <ParametersPanel params={params} onParamsChange={handleParamsChange} />
+        {profilId !== null && (
+          <ProfilChart profilType={GetProfil(profilId)} />
+        )}
       <Timeline params={params} importantDates={importantDates} historicalData={historicalData} />
       <DataPanel
         historicalData={historicalData}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { txTcToEqtp, type HistoricalData, type SalaryDistributionEqtp } from './types';
+import { txTcToEqtp, type HistoricalData, type ProfilType, type SalaryDistributionEqtp } from './types';
 import { createHistoricalData, ParseCSV } from '../helpers/Common';
 // import { createHistoricalData, ParseCSV } from './Helpers';
 
@@ -7,6 +7,7 @@ interface DataLoaderProps {
   onDataLoaded: (data: {
     historicalData: HistoricalData[];
     salaryDistributionEqtp: SalaryDistributionEqtp[];
+    profilsBase: ProfilType[];
     dataByYear: Map<number, HistoricalData>;
   }) => void;
 }
@@ -27,6 +28,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           esperanceVieContent,
           emploiEqtpContent,
           salaireMoyenContent,
+          profilsContent,
         ] = await Promise.all([
           fetch(base + '1.107-PartageDeLaValeurAjoutéeBruteAPrixCourants.txt').then(r => r.text()),
           fetch(base + '3.201-DépensesEtRecettesDesAdministrationsPubliques(S13).txt').then(r => r.text()),
@@ -38,6 +40,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           fetch(base + 'EsperanceVie.txt').then(r => r.text()),
           fetch(base + '1.109-EmploiIntérieurTotalParSecteurInstitutionnelEnNombreEQTP.txt').then(r => r.text()),
           fetch(base + 'TC01-EvolutionDuSalaireNetAnnuelMoyen.txt').then(r => r.text()),
+          fetch(base + 'profils.txt').then(r => r.text()),
         ]);
 
         // Parser les données
@@ -51,6 +54,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
         const distribEqtp = ParseCSV(distribSalairesContent);
         const emploiEqtp = ParseCSV(emploiEqtpContent);
         const salaireMoyen = ParseCSV(salaireMoyenContent);
+        const profilsRows = ParseCSV(profilsContent);
 
         const dataByYear = new Map<number, HistoricalData>();
 
@@ -144,6 +148,56 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
             data.salMoyNetMens = data.salMoyNetAnTc*(1+txTcToEqtp)/12;
           }
         });
+        
+        // Construction des 4 profils
+        const profilsBase: ProfilType[] = [
+          { name: 'ouvrier', salaires: [] },
+          { name: 'employe', salaires: [] },
+          { name: 'cadre', salaires: [] },
+          { name: 'profIntermediaire', salaires: [] },
+        ];
+        profilsRows.forEach((row: any) => {
+        profilsBase[0].salaires.push({
+          annee: parseFloat(row['pctAvancement']),
+          cotisation: 0,
+          salaire: parseFloat(row['ouvrier']),
+          commentaire: row['eventOuvrier'] ?? '',
+          pension: 0,
+          cotise: 0,
+          finance: 0,
+          ponctionne: 0,
+        });
+        profilsBase[1].salaires.push({
+          annee: parseFloat(row['pctAvancement']),
+          cotisation: 0,
+          salaire: parseFloat(row['employe']),
+          commentaire: row['eventEmploye'] ?? '',
+          pension: 0,
+          cotise: 0,
+          finance: 0,
+          ponctionne: 0,
+        });
+        profilsBase[2].salaires.push({
+          annee: parseFloat(row['pctAvancement']),
+          cotisation: 0,
+          salaire: parseFloat(row['cadre']),
+          commentaire: row['eventCadre'] ?? '',
+          pension: 0,
+          cotise: 0,
+          finance: 0,
+          ponctionne: 0,
+        });
+        profilsBase[3].salaires.push({
+          annee: parseFloat(row['pctAvancement']),
+          cotisation: 0,
+          salaire: parseFloat(row['profIntermediaire']),
+          commentaire: row['eventProfIntermediaire'] ?? '',
+          pension: 0,
+          cotise: 0,
+          finance: 0,
+          ponctionne: 0,
+        });
+      });
 
         // Créer le tableau final trié
         const historicalData = Array.from(dataByYear.values()).sort((a, b) => a.year - b.year);
@@ -159,7 +213,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
         }));
 
         // Appeler le callback avec les données
-        onDataLoaded({ historicalData, salaryDistributionEqtp, dataByYear });
+        onDataLoaded({ historicalData, salaryDistributionEqtp, profilsBase, dataByYear });
 
       } catch (error) {
         console.error('Erreur lors du chargement des données:', error);

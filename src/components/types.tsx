@@ -107,6 +107,32 @@ export type SalaryInfo = {
   partMasseSalOverPmss: number;
 }
 
+export type SalaireEntry = {
+  // annee: number;
+  // salaire?: number;
+  // cotisation?: number;
+  // pension?: number;
+  // finance?: number;
+  // ponctionne?: number;
+  // cotise?: number;
+  // commentaire?: string;
+  annee: number;
+  salaire: number;
+  cotisation: number;
+  commentaire: string;
+  pension: number;
+  cotise: number;
+  finance: number;
+  ponctionne: number;
+}
+// interface ProfilType {
+//   salaires: SalaireEntry[];
+// }
+export type ProfilType = {
+  name: string;
+  salaires: SalaireEntry[];
+}
+
 export const salaireMensMoyBrut2021: number = 3321;
 export const salaireMensMoyNet2021: number = 2524;
 export const salaireMensNetMin: number = 1000;
