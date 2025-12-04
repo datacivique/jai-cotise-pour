@@ -41,7 +41,8 @@ const Timeline: React.FC<{
 
     const age0 = historicalData.find(d => d.age === 0)||createHistoricalData();
 
-            const propTravail = (age0.ageRetraite - (age0.dureeCotisation/4)) / age0.esperanceVie;
+            const propTravail = (age0.dureeCotisation/4) / (age0.dureeVieEnRetraite+age0.ageRetraite);
+            console.log(age0.ageRetraite,(age0.dureeCotisation/4),age0.esperanceVie, propTravail)
             const perso = age0.sumtotalCnavPlafondEnSalMoy;
             const riche = age0.sumtotalCnavHorsPlafondEnSalMoy;
             const demo = age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal-(perso+riche);
@@ -259,28 +260,28 @@ const triPerso = calculateTRI(historicalData, true);
           <div className="p-3 bg-blue-50 rounded-lg">
             <div className="text-blue-800 text-center">Total cotisé</div>
             <div className="font-semibold text-blue-600 text-center" style={{marginTop: "5px"}}>
-              {formatNum(age0.sumtotalCnavPlafondEnSalMoy, 0, "salaires moyens")}<br/>
+              {formatNum(age0.sumtotalCnavPlafondEnSalMoy/100, 0, "salaires moyens")}<br/>
               <i>({(dureeCotisee).toFixed(2)} ans de retraite)</i>
             </div>
           </div>
           <div className="p-3 bg-purple-50 rounded-lg">
             <div className="text-purple-800 text-center">Total financé</div>
             <div className="font-semibold text-purple-600 text-center" style={{marginTop: "5px"}}>
-              {formatNum(age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal, 0, "salaires moyens")}<br/>
+              {formatNum((age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal)/100, 0, "salaires moyens")}<br/>
               <i>({(dureeFinancee).toFixed(2)} ans de retraite)</i>
             </div>
           </div>
           <div className="p-3 bg-orange-50 rounded-lg">
             <div className="text-orange-800 text-center">Total obtenu</div>
             <div className="font-semibold text-orange-600 text-center" style={{marginTop: "5px"}}>
-              {formatNum(age0.sumpensionMensEnSalMoy, 0, "salaires moyens")}<br/>
+              {formatNum(age0.sumpensionMensEnSalMoy/100, 0, "salaires moyens")}<br/>
               <i>({(age0.dureeVieEnRetraite).toFixed(2)} ans de retraite)</i>
             </div>
           </div>
           <div className="p-3 bg-red-50 rounded-lg">
             <div className="text-red-800 text-center">Total ponctionné</div>
             <div className="font-semibold text-red-600 text-center" style={{marginTop: "5px"}}>
-              {formatNum(next, 0, "salaires moyens")}<br/>
+              {formatNum(next/100, 0, "salaires moyens")}<br/>
               <i>({(dureeNonFinancee).toFixed(2)} ans de retraite)</i>
             </div>
           </div>
