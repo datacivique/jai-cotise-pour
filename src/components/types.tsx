@@ -108,14 +108,6 @@ export type SalaryInfo = {
 }
 
 export type SalaireEntry = {
-  // annee: number;
-  // salaire?: number;
-  // cotisation?: number;
-  // pension?: number;
-  // finance?: number;
-  // ponctionne?: number;
-  // cotise?: number;
-  // commentaire?: string;
   annee: number;
   salaire: number;
   cotisation: number;
@@ -124,15 +116,14 @@ export type SalaireEntry = {
   cotise: number;
   finance: number;
   ponctionne: number;
+  net: number;
 }
-// interface ProfilType {
-//   salaires: SalaireEntry[];
-// }
 export type ProfilType = {
   name: string;
   salaires: SalaireEntry[];
 }
 
+export const pensionBrutToNet: number = .9;
 export const salaireMensMoyBrut2021: number = 3321;
 export const salaireMensMoyNet2021: number = 2524;
 export const salaireMensNetMin: number = 1000;
@@ -143,3 +134,6 @@ export const txTcToEqtp: number = 0.00982942821823;
 export const projectionBaseSalMoy: number = 1.5;
 export const projectionBaseInflation: number = 1.6;
 export const projectionBasePib: number = 3;
+
+export const salaireMensMoyBrut2025: number = 3602;
+export const salaireMensMoyNet2025: number = 2733;

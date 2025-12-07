@@ -26,7 +26,7 @@ const Timeline: React.FC<{
   // Fonction pour positionner en % sur la timeline
   const getPositionPercent = (year: number) => ((year - timelineStart) / timelineRange) * 100;
 
-  // Trouver la valeur max globale pour une échelle commune (en PMSS)
+  // Trouver la valeur max globale pour une échelle commune (en salaires moyens)
   const allValues = historicalData.flatMap(d => [
     (d.sumtotalCnavPlafondEnSalMoy || 0) + 
     (d.sumtotalCnavHorsPlafondEnSalMoy || 0) + 
@@ -36,13 +36,12 @@ const Timeline: React.FC<{
   ]);
   const maxValue = Math.max(...allValues);
   
-  // Pixels par unité de PMSS
-  const pixelsPerPmss = 150 / maxValue;
+  // Pixels par unité de salaires moyens
+  const pixelsPerSalMoy = 150 / maxValue;
 
     const age0 = historicalData.find(d => d.age === 0)||createHistoricalData();
 
             const propTravail = (age0.dureeCotisation/4) / (age0.dureeVieEnRetraite+age0.ageRetraite);
-            console.log(age0.ageRetraite,(age0.dureeCotisation/4),age0.esperanceVie, propTravail)
             const perso = age0.sumtotalCnavPlafondEnSalMoy;
             const riche = age0.sumtotalCnavHorsPlafondEnSalMoy;
             const demo = age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal-(perso+riche);
@@ -65,8 +64,25 @@ const triPerso = calculateTRI(historicalData, true);
       <div className="px-6 py-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-900">Soutenabilité du régime général dans le temps</h2>
       </div>
+      <p className="px-6 py-4 text-gray-600 text-sm mt-1">Représentation des contributions et prestations de retraite sur toute la vie.</p>
       <div className="px-6 py-6">
-        <div className="relative" style={{ height: '400px' }}>
+        <div className="relative" style={{ height: '300px' }}>
+          {/* Axe des ordonnées - Flèches et labels */}
+          <div className="absolute" style={{ left: '75px', top: '50%' }}>
+            {/* Flèche vers le haut - Contributeur */}
+            <div className="flex flex-col items-center" style={{ position: 'absolute', bottom: '20px', left: '0' }}>
+              <div className="text-xs text-gray-600 font-semibold mb-1">Contributeur</div>
+              <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-gray-600"></div>
+              <div className="w-0.5 h-16 bg-gray-600"></div>
+            </div>
+            
+            {/* Flèche vers le bas - Bénéficiaire */}
+            <div className="flex flex-col items-center" style={{ position: 'absolute', top: '20px', left: '0' }}>
+              <div className="w-0.5 h-16 bg-gray-600"></div>
+              <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-gray-600"></div>
+              <div className="text-xs text-gray-600 font-semibold mt-1">&nbsp;Bénéficiaire&nbsp;</div>
+            </div>
+          </div>
           {/* Ligne horizontale principale */}
           <div className="absolute left-0 right-0 h-1 bg-gray-300" style={{ top: '50%' }} />
 
@@ -87,10 +103,10 @@ const triPerso = calculateTRI(historicalData, true);
             const isRetired = currentData.t1.isRetired || currentData.t4.isRetired;
             
             // Normaliser les hauteurs avec la même échelle
-            const heightPlafond = cotisPlafond * pixelsPerPmss;
-            const heightHorsPlafond = cotisHorsPlafond * pixelsPerPmss;
-            const heightDemographie = cotisDemographie * pixelsPerPmss;
-            const heightPension = pension * pixelsPerPmss;
+            const heightPlafond = cotisPlafond * pixelsPerSalMoy;
+            const heightHorsPlafond = cotisHorsPlafond * pixelsPerSalMoy;
+            const heightDemographie = cotisDemographie * pixelsPerSalMoy;
+            const heightPension = pension * pixelsPerSalMoy;
             
             const totalCotisHeight = heightPlafond + heightHorsPlafond + heightDemographie;
             const age = currentData.age;
@@ -106,9 +122,9 @@ const triPerso = calculateTRI(historicalData, true);
             function getTitle(title:string, cotis:number, pension:number): string {
               var signe = cotis>pension ? ">" : "<";
               if (pension>0) {
-                return `${title}: ${formatNum(cotis,0,"PMSS")} ${signe} Pensions perçues: ${formatNum(pension,0,"PMSS")}`;
+                return `${title}: ${formatNum(cotis/100,2,"salaires moyens")} ${signe} Pensions perçues: ${formatNum(pension/100,2,"salaires moyens")}`;
               } else {
-                return `${title}: ${formatNum(cotis,0,"PMSS")}`;
+                return `${title}: ${formatNum(cotis/100,2,"salaires moyens")}`;
               }
             }
             
@@ -137,7 +153,7 @@ const triPerso = calculateTRI(historicalData, true);
                       <div 
                         className="w-full bg-purple-400"
                         style={{ height: `${heightDemographie}px` }}
-                        title={`(${year}) Croissance économique: ${formatNum(cotisDemographie,2,"PMSS")}`}
+                        title={`(${year}) Croissance économique: ${formatNum(cotisDemographie/100,2,"salaires moyens")}`}
                       />
                     )}
                     {/* Solidarité intra (au milieu) */}
@@ -145,7 +161,7 @@ const triPerso = calculateTRI(historicalData, true);
                       <div 
                         className="w-full bg-orange-400"
                         style={{ height: `${heightHorsPlafond}px` }}
-                        title={`(${year}) Contribution hauts revenus: ${formatNum(cotisHorsPlafond,2,"PMSS")}`}
+                        title={`(${year}) Contribution hauts revenus: ${formatNum(cotisHorsPlafond/100,2,"salaires moyens")}`}
                       />
                     )}
                     {/* Cotisations plafond (en bas) */}
@@ -167,7 +183,7 @@ const triPerso = calculateTRI(historicalData, true);
                       bottom: `-${heightPension}px`,
                       height: `${redHeight}px` 
                     }}
-                    title={`(${year}) Solidarité inter-générationnelle: ${((heightPension - totalCotisHeight) / pixelsPerPmss).toFixed(2)} PMSS`}
+                    title={`(${year}) Solidarité inter-générationnelle: ${formatNum(((heightPension - totalCotisHeight) / pixelsPerSalMoy)/100, 2, "salaires moyens")}`}
                   />
                 )}
               </div>
@@ -286,7 +302,7 @@ const triPerso = calculateTRI(historicalData, true);
             </div>
           </div>
           <p className="md:col-span-5 italic">
-  (*) Cette simulation concerne une personne fictive ayant toujours perçu le salaire moyen et validé toutes ses annuités. 
+  (*) Cette simulation concerne une personne fictive ayant toujours perçu le salaires moyens et validé toutes ses annuités. 
   Le <span className="text-blue-600">“total cotisé”</span> représente l’ensemble des cotisations réellement versées par le salarié (en salaires moyens), 
   le <span className="text-purple-600">“total financé”</span> correspond à l’apport de la croissance démographique et économique au système par répartition, 
   le <span className="text-orange-600">“total obtenu”</span> est le total des pensions perçues sur toute la retraite, 

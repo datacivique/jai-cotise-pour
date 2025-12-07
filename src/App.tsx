@@ -8,7 +8,7 @@ import DataLoader from './components/DataLoader';
 import { GetSalaryInfo } from './helpers/SalaryInfo';
 import { UpdateHistoricalData } from './helpers/HistoricalData';
 import { GetProfils } from './helpers/ProfilType';
-import ProfilChart from './components/profil';
+import ProfilChart from './components/ProfileChart';
 
 const RetirementSimulation = () => {
   const [params, setParams] = useState<SimulationParams>({
@@ -82,7 +82,6 @@ const RetirementSimulation = () => {
     setIsLoading(false);
     setprofilsBase(data.profilsBase);
     setprofils(GetProfils(data.profilsBase, data.historicalData));
-      console.log(data.historicalData)
   };
 
   const handleParamsChange = (newParams: Partial<SimulationParams>) => {
@@ -118,9 +117,7 @@ const RetirementSimulation = () => {
       const updatedParams = { ...params, ...newParams };
       UpdateHistoricalData(historicalData, updatedParams, salaryInfo);
       setParams(updatedParams);
-      if (newParams.cotisationDuration != undefined) {
-        setprofils(GetProfils(profilsBase, historicalData));
-      }
+      setprofils(GetProfils(profilsBase, historicalData));
     }
   };
 
@@ -138,10 +135,38 @@ const RetirementSimulation = () => {
   return (
     <div className="w-full min-w-4xl max-w-6xl mx-auto p-6 space-y-6 bg-gray-50 min-h-screen">
 
+        {profilId !== null && (
+          <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-6 border-l-4 border-red-500 shadow-sm">
+            <h3 className="text-2xl font-extrabold text-gray-900 mb-4">
+              ⚡ Retraites : ce que personne ne vous a jamais vraiment expliqué
+            </h3>
+
+            {/* Punchline centrale */}
+            <div className="bg-white rounded-md p-4 border-l-4 border-red-600 shadow mb-5">
+              <p className="text-lg font-semibold text-red-800 leading-snug">
+                Cotiser 10 à 15 % de son salaire pendant 44, voir 40 ans…  
+                pour toucher 50 % des 25 meilleures années.
+              </p>
+              <p className="text-red-700 text-sm mt-2 font-medium">
+                Une promesse intenable mathématiquement pendant 70 ans.  
+                L’écart ? Il n’a jamais disparu. Il a simplement été envoyé à la génération suivante.
+              </p>
+            </div>
+
+            {/* Explication courte mais explosive */}
+              <p className="text-gray-800 font-semibold">
+              Ici, on compare les <b>efforts contributifs</b> réels de chaque génération — cotisations, croissance économique, dynamique démographique — 
+              avec ce qu’elle reçoit réellement de la <b>C</b>aisse <b>N</b>ationale d'<b>A</b>ssurance <b>V</b>ieillesse (le régime général).
+              <br />🎯 Objectif : voir ce qui a été effectivement financé… et ce qui a été reporté sur la génération suivante
+            </p>
+          </div>
+        )} 
+        
+        {profilId == null && (
 <div className="bg-yellow-50 rounded-lg p-5 border-l-4 border-yellow-500">
-  <h3 className="text-lg font-semibold text-gray-900 mb-2">🔍 La retraite en répartition ? Qui paie, et combien...</h3>
+  <h3 className="text-lg font-semibold text-gray-900 mb-2">🔍 La régime général ? Qui paie, et combien...</h3>
   <p className="text-gray-700 leading-relaxed mb-3">
-    Cette application propose d'explorer la <strong>soutenabilité du système de retraite</strong> en comparant, 
+    Cette application propose d'explorer la <strong>soutenabilité de la Caisse Nationale d'Assurance Vieillesse</strong> en comparant, 
     sur l'ensemble d'une vie, les <strong>cotisations versées</strong> et les 
     <strong> pensions perçues</strong>, exprimées en parts du 
     <strong> salaire moyen</strong>.
@@ -149,10 +174,11 @@ const RetirementSimulation = () => {
 
   <div className="mt-4 bg-white rounded-md p-3 border-l-2 border-yellow-600">
     <p className="text-gray-800 font-semibold">
-      🎯 Objectif : mieux percevoir les ordres de grandeur pour comprendre les enjeux de soutenabilité.
+      🎯 Objectif : mieux percevoir les ordres de grandeur pour comprendre les enjeux de soutenabilité et de justice.
     </p>
   </div>
 </div>
+        )}
 
 
 
@@ -162,7 +188,9 @@ const RetirementSimulation = () => {
         {profilId !== null && (
           <ProfilChart profilType={GetProfil(profilId)} />
         )}
-      <Timeline params={params} importantDates={importantDates} historicalData={historicalData} />
+        {profilId == null && (
+          <Timeline params={params} importantDates={importantDates} historicalData={historicalData} />
+        )}
       <DataPanel
         historicalData={historicalData}
         salaryDistributionEqtp={salaryDistributionEqtp}

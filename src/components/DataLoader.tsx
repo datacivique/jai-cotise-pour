@@ -151,10 +151,10 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
         
         // Construction des 4 profils
         const profilsBase: ProfilType[] = [
-          { name: 'ouvrier', salaires: [] },
-          { name: 'employe', salaires: [] },
-          { name: 'cadre', salaires: [] },
-          { name: 'profIntermediaire', salaires: [] },
+          { name: 'Ouvrier', salaires: [] },
+          { name: 'Employe de bureau', salaires: [] },
+          { name: 'Cadre', salaires: [] },
+          { name: 'Profession Intermediaire', salaires: [] },
         ];
         profilsRows.forEach((row: any) => {
         profilsBase[0].salaires.push({

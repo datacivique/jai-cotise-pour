@@ -1,41 +1,41 @@
-pctAvancement;ouvrier;employe;cadre;profIntermediaire;eventOuvrier;eventEmploye;eventCadre;eventProfIntermediaire
-0.025;0.60;0.50;1.00;0.80;Entrée comme manœuvre, bas salaire;Début comme employé administratif;Premier poste de cadre junior;Début comme technicien/agent de maîtrise junior
-0.05;0.62;0.52;1.05;0.82;;;;
-0.075;0.64;0.54;1.10;0.84;;;;
-0.10;0.66;0.56;1.12;0.86;;;;
-0.125;0.68;0.58;1.15;0.88;Obtention qualification de base;Début de polyvalence;Première petite promotion;Prise de responsabilités limitées
-0.15;0.70;0.60;1.20;0.90;;;;
-0.175;0.71;0.62;1.25;0.93;;;;
-0.20;0.72;0.64;1.30;0.95;;;;
-0.225;0.73;0.66;1.32;0.97;;;;
-0.25;0.74;0.68;1.35;1.00;Atteinte pleine compétence métier;Poste stabilisé;Accès à un rôle de management junior;Passage agent de maîtrise confirmé
-0.275;0.75;0.70;1.38;1.03;;;;
-0.30;0.76;0.72;1.40;1.05;;;;
-0.325;0.77;0.73;1.45;1.07;;;;
-0.35;0.78;0.74;1.50;1.10;;;;
-0.375;0.79;0.75;1.55;1.12;Pleine maîtrise, référence atelier;Responsabilités administratives élargies;Cadre confirmé;Encadrement technique élargi
-0.40;0.80;0.76;1.60;1.15;;;;
-0.425;0.81;0.77;1.65;1.18;;;;
-0.45;0.82;0.78;1.70;1.20;;;;
-0.475;0.83;0.79;1.75;1.22;;;;
-0.50;0.85;0.80;1.80;1.25;Pic de carrière ouvrier;Poste de responsable d’équipe;Poste stratégique senior;Tech lead / maîtrise avancée
-0.525;0.84;0.79;1.82;1.24;;;;
-0.55;0.83;0.78;1.84;1.23;;;;
-0.575;0.82;0.77;1.85;1.22;;;;
-0.60;0.81;0.76;1.88;1.21;;;;
-0.625;0.80;0.75;1.90;1.20;Début d'usure, stagnation;Restructuration interne;Bonus plus faible / stagnation;Responsabilité transversale plus faible
-0.65;0.79;0.74;1.88;1.18;;;;
-0.675;0.78;0.73;1.85;1.17;;;;
-0.70;0.77;0.72;1.82;1.16;;;;
-0.725;0.76;0.71;1.80;1.15;;;;
-0.75;0.75;0.70;1.78;1.14;Début de pénibilité accrue;Tâches moins exigeantes;Réduction de périmètre;Moins de projets techniques
-0.775;0.74;0.69;1.75;1.13;;;;
-0.80;0.73;0.68;1.72;1.12;;;;
-0.825;0.72;0.67;1.70;1.11;;;;
-0.85;0.71;0.66;1.68;1.10;;;;
-0.875;0.70;0.65;1.65;1.08;Changement de poste moins contraignant;Poste administratif allégé;Moins de pression hiérarchique;Fin des responsabilités d’encadrement
-0.90;0.69;0.64;1.62;1.07;;;;
-0.925;0.68;0.63;1.58;1.05;;;;
-0.95;0.67;0.62;1.55;1.03;;;;
-0.975;0.66;0.61;1.52;1.02;;;;
-1.00;0.65;0.60;1.50;1.00;Fin de carrière progressive;Préparation retraite;Fin de carrière sereine;Transition vers soutien / expertise occasionnelle
+annee;ouvrier;employe;cadre;profIntermediaire;eventOuvrier;eventEmploye;eventCadre;eventProfIntermediaire
+1;0.62;0.61;0.85;0.78;;;;
+2;0.655;0.645;0.88;0.82;;;;
+3;0.691107644;0.674726989;0.916536661;0.856864275;;;;
+4;0.708;0.69;0.945;0.88;;;;
+5;0.725;0.705;0.98;0.905;Obtention CQP;;;
+6;0.738;0.715;1.02;0.92;;;;
+7;0.748;0.725;1.06;0.935;;;;
+8;0.755;0.732;1.11;0.948;;Titularisation définitive;Promotion cadre confirmé;
+9;0.762;0.738;1.16;0.958;;;;
+10;0.77;0.745;1.22;0.968;Promotion chef équipe;;Gestion équipe;Spécialisation technique reconnue
+11;0.775;0.748;1.26;0.973;;;;
+12;0.778;0.75;1.295;0.976;;;;
+13;0.780421217;0.752340094;1.329563183;0.979329173;;;;
+14;0.785;0.755;1.37;0.99;;;;
+15;0.79;0.76;1.415;1.005;;Formation nouvelles technologies;Accès direction intermédiaire;
+16;0.795;0.765;1.46;1.02;;;;Responsabilités encadrement proximité
+17;0.8;0.77;1.505;1.032;;;;
+18;0.805;0.775;1.545;1.042;Usure physique début;;;
+19;0.81;0.78;1.58;1.05;;;;
+20;0.814;0.784;1.61;1.058;;;;
+21;0.816;0.786;1.625;1.063;;;;
+22;0.818;0.788;1.638;1.066;;Stagnation hiérarchique;Accès direction générale;
+23;0.819;0.79;1.648;1.069;;;;
+24;0.8195;0.7905;1.652;1.071;;;;Concurrence nouveaux diplômés
+25;0.819812793;0.790951638;1.655226209;1.072152886;Plafonnement salarial atteint;;;
+26;0.822;0.792;1.68;1.078;;;;
+27;0.823;0.7925;1.71;1.085;;;;
+28;0.824;0.793;1.74;1.09;;;Direction générale confirmée;
+29;0.825;0.7935;1.765;1.093;;;;
+30;0.826;0.794;1.785;1.096;;Progression ancienneté seule;;
+31;0.8265;0.7945;1.8;1.098;;;;
+32;0.827;0.795;1.81;1.0985;;;;Rôle référent technique
+33;0.827223089;0.79524181;1.818642746;1.099843994;;;;
+34;0.826;0.7955;1.835;1.108;;;;
+35;0.825;0.796;1.85;1.118;Postes moins physiques;;Cadre dirigeant consolidé;
+36;0.823;0.797;1.862;1.126;;;;
+37;0.821;0.798;1.873;1.132;;;;
+38;0.819;0.799;1.882;1.137;;;;Mentorat expertise reconnue
+39;0.816302652;0.800312012;1.89274571;1.141575663;;;;
+40;0.813;0.801;1.9;1.145;;;;

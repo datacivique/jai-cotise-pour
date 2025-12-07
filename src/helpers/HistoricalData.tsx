@@ -1,5 +1,5 @@
 import { txSalMensToPmss, type HistoricalData, type SalaryInfo, type SimulationParams } from "../components/types";
-import { changeNaN } from "./Common";
+import { changeNaN, getAge0 } from "./Common";
 
 // Calcul le profil de contribution/prestation
 export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationParams, salaryInfo: SalaryInfo) => {
@@ -148,7 +148,7 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
     // Si travail dans l'année
     if (d.t1.isCotised || d.t4.isCotised) {
       if (pib1 == 0) { pib1 = d.masseSalarialeBrutPrive; sal1 = d.salMoyNetMens;}
-      if (sal1 == 0 || sal2 == 0) console.log("test")
+      // if (sal1 == 0 || sal2 == 0) console.log("test")
       d.croissanceMasseSalarialePriveBrutCumule = d0.croissanceMasseSalarialePriveBrutCumule*(1+(d.croissanceMasseSalarialePriveBrut / 100));
       if (data[iSimulation].year == 1999 || data[iSimulation].year == 2000) {
       }
@@ -218,9 +218,9 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
       data[iSimulation].sumpensionMensEnSalMoy = d.sumpensionMensEnSalMoy;
     }
   }
+  data[iSimulation].dureeCotisation = param.cotisationDuration;
   // console.log(pib1, pib2, sal1, sal2)
-  // console.log(data[iSimulation].year, (pib2/pib1)/data[iSimulation].dureeCotisation, (sal2/sal1)/data[iSimulation].dureeCotisation)
-  // console.log(pib1, pib2, sal1, sal2)
+  // console.log(data[iSimulation])
     // console.log(data[iSimulation].year, data[iSimulation].sumtotalCnavPlafondEnSalMoy, data[iSimulation].sumtotalCnavPlafondEnSalMoyCroissMasSal, data[iSimulation].sumpensionMensEnSalMoy)
   } catch (err) {
     console.log("Error " + step +".", err);
