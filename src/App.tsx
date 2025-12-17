@@ -129,6 +129,9 @@ const RetirementSimulation = () => {
     return {
       name: "string",
       salaires: [],
+  totalCotisation: 0,
+  totalFinance: 0,
+  totalPonction: 0,
     }
   }
 

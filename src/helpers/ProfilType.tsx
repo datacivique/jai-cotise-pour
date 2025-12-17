@@ -1,5 +1,4 @@
 import { pensionBrutToNet, salaireMensMoyBrut2021, salaireMensMoyNet2021, type HistoricalData, type ProfilType, type SalaireEntry } from "../components/types";
-import { createHistoricalData } from "./Common";
 
 // Retourne le salaire moyen des 25 meilleurs années
 export const GetSalRef = (salaires: SalaireEntry[]): number => {
@@ -31,16 +30,17 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
   }
   const age0 = historicalData[iAge0];
   var duree = Math.round(age0.dureeCotisation / 4);
+  var croissance = 1-((age0.sumtotalCnavPlafondEnSalMoy+age0.sumtotalCnavHorsPlafondEnSalMoy)/(age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal))
 
-  var dureeCotise = Math.round(age0.dureeVieEnRetraite * age0.sumtotalCnavPlafondEnSalMoy / age0.sumpensionMensEnSalMoy);
-  var dureeFinance = Math.round(age0.dureeVieEnRetraite * (age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal) / age0.sumpensionMensEnSalMoy);
-  
     var salRef: number[] = [0, 0, 0, 0];
     var prevComShown: boolean[] = [false, false, false, false];
 
   const result: ProfilType[] = profilsBase.map(p => ({
     name: p.name,
-    salaires: []
+    salaires: [],
+    totalCotisation: 0,
+    totalFinance: 0,
+    totalPonction: 0,
   }));
 
   // nombre de points dans la base (ex: 40 lignes)
@@ -52,6 +52,10 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
       (idx + 1) / nBase
     );
 
+    var sumCotisation: number[] = [0, 0, 0, 0];
+    var sumCroissance: number[] = [1, 1, 1, 1];
+    var sumPension: number[] = [0, 0, 0, 0];
+
   for (let year = 1; year <= duree+age0.dureeVieEnRetraite; year++) {
 
     // Add retraite
@@ -59,73 +63,23 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
 
         profilsBase.forEach((profil, pIndex) => {
             
-        var sal = salRef[pIndex] * (1 - ((year-duree)*.005));
-
         var ret = historicalData[iTravail0+year];
-        sal = salRef[pIndex] * (1 + ((ret.pensionMensEnSalMoy/100)-.5));
-        // if (profil.name == "Ouvrier") console.log(year, salRef[pIndex], ret.pensionMensEnSalMoy/100, sal);
 
-            if (year - duree > dureeFinance) {
-                result[pIndex].salaires.push({
-                    annee: year,
-                    cotisation: 0,
-                    salaire: 0,
-                    commentaire:(profil== undefined ? "1" : ""),
-                    pension: sal,
-                    cotise: 0,
-                    finance: 0,
-                    ponctionne: 1,
-                    net: sal*pensionBrutToNet,
-                });
-            } else if (year - duree == dureeFinance) {
-                result[pIndex].salaires.push({
-                    annee: year,
-                    cotisation: 0,
-                    salaire: 0,
-                    commentaire:"",
-                    pension: sal,
-                    cotise: 0,
-                    finance: 1,
-                    ponctionne: 1,
-                    net: sal*pensionBrutToNet,
-                });
-            } else if (year - duree > dureeCotise) {
-                result[pIndex].salaires.push({
-                    annee: year,
-                    cotisation: 0,
-                    salaire: 0,
-                    commentaire:"",
-                    pension: sal,
-                    cotise: 0,
-                    finance: 1,
-                    ponctionne: 0,
-                    net: sal*pensionBrutToNet,
-                });
-            } else if (year - duree == dureeCotise) {
-                result[pIndex].salaires.push({
-                    annee: year,
-                    cotisation: 0,
-                    salaire: 0,
-                    commentaire:"",
-                    pension: sal,
-                    cotise: 1,
-                    finance: 1,
-                    ponctionne: 0,
-                    net: sal*pensionBrutToNet,
-                });
-            } else  {
-                result[pIndex].salaires.push({
-                    annee: year,
-                    cotisation: 0,
-                    salaire: 0,
-                    commentaire:"",
-                    pension: sal,
-                    cotise: 1,
-                    finance: 0,
-                    ponctionne: 0,
-                    net: sal*pensionBrutToNet,
-                });
-            }
+        var pension = (salRef[pIndex]/2)*ret.pensionMensEnSalMoy/50
+
+        sumPension[pIndex] += pension;
+        
+        result[pIndex].salaires.push({
+            annee: year,
+            cotisation: 0,
+            salaire: 0,
+            commentaire:(profil== undefined ? "1" : ""),
+            pension: pension,
+            cotise: 0,
+            finance: 0,
+            ponctionne: 0,
+            net: pension*pensionBrutToNet,
+        });
         });
         
     } else {
@@ -176,34 +130,41 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
         }
         if (year == duree) commentaire = sHigh.commentaire;
 
-        // salRef[pIndex] += interpolatedSalaire;
-        // if (year == duree) {
-        //     salRef[pIndex] = .55 * salRef[pIndex] / duree;
-        // }
-
         var taf = historicalData[iTravail0+year];
         var pension = 0;
         if (year == duree) {
-            salRef[pIndex] = GetSalRef(result[pIndex].salaires) / 2;
-            pension = (taf.pensionEnSalMoy/600) * salRef[pIndex] * .5 / (taf.pensionMensEnSalMoy/100);
+            var salReference = GetSalRef(result[pIndex].salaires);
+            var ratioPmssSalMoy = taf.pmssNet/taf.salMoyNetMens;
+            salRef[pIndex] = Math.min(salReference, ratioPmssSalMoy);
+
+            // Premiere pension
+            pension = (taf.pensionEnSalMoy/600) * salRef[pIndex] * .5;
 
             if (taf.pensionEnSalMoy != 600) {
                 commentaire = commentaire + " (année incomplète)";
             }
-
-            // if (profil.name == "Ouvrier") console.log(year, interpolatedSalaire, salRef[pIndex], pension, (year == duree ? 1 : 0));
+            //  if (profil.name == "Cadre") console.log(year, salReference,ratioPmssSalMoy);
         }
 
         var cotisationT1 = Math.min(interpolatedSalaire*taf.salMensRefEnSalMoy, taf.salMensRefEnSalMoy) * taf.txCnavPlafond / 100;
-        var cotisationT2 = (interpolatedSalaire*taf.salMensRefEnSalMoy * taf.txCnavSalaire / 100)|0;
+        var cotisationT2 = (interpolatedSalaire*taf.salMensRefEnSalMoy * (taf.txCnavSalaire|0) / 100);
         var cotisation = cotisationT1+cotisationT2;
         if (cotisation == 0) {
             cotisation = result[pIndex].salaires[result[pIndex].salaires.length-1].cotisation;
         }
 
+        if (year > 1) {
+            var taf0 = historicalData[iTravail0+year-1];
+            var sal0 = result[pIndex].salaires[result[pIndex].salaires.length-1]
+            var croissMass = (((taf.masseSalarialeBrutPrive/interpolatedSalaire)/(taf0.masseSalarialeBrutPrive/sal0.salaire))-1) * 100;
+        //   if (profil.name == "Cadre") console.log(year, croissMass);
+            var cotisCroissMass = (croissMass/100) * (taf.txCnavPlafond / 100);
+            sumCroissance[pIndex] = sumCroissance[pIndex] + cotisCroissMass;
+        }
+
         var ratioBrutToNet = salaireMensMoyNet2021/salaireMensMoyBrut2021;
         var net = (interpolatedSalaire*ratioBrutToNet*taf.salMensRefEnSalMoy)+(pension*pensionBrutToNet);
-        // if (profil.name == "Cadre") console.log(year, interpolatedSalaire, net, taf);
+        //  if (profil.name == "Ouvrier") console.log(year, taf, interpolatedSalaire);
 
         result[pIndex].salaires.push({
             annee: year,
@@ -211,14 +172,38 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
             salaire: interpolatedSalaire,
             commentaire,
             pension: pension,
-            // pension: (year == duree ? salRef[pIndex] : 0),
-            cotise: (year == duree ? 1 : 0),
+            cotise: 0,
             finance: 0,
             ponctionne: 0,
             net: net,
         });
+        
+        sumCotisation[pIndex] += cotisation;
+        sumPension[pIndex] += pension;
         });
     }
   }
+
+  for (let i = 0; i < 4; i++) {
+
+    var ratioCotisation = sumCotisation[i]/sumPension[i];
+    var ratioFinance = sumCroissance[i]/sumPension[i];
+    var ratioPonction = 1-(ratioCotisation+ratioFinance);
+
+    for (let ret = 0; ret < result[i].salaires.length; ret++) {
+        if (result[i].salaires[ret].pension == 0) continue;
+        
+        result[i].salaires[ret].cotise = result[i].salaires[ret].pension*ratioCotisation;
+        result[i].salaires[ret].finance = result[i].salaires[ret].pension*ratioFinance;
+        result[i].salaires[ret].ponctionne = result[i].salaires[ret].pension*ratioPonction;
+    }
+
+    result[i].totalCotisation = sumCotisation[i];
+    result[i].totalFinance = sumCroissance[i];
+    result[i].totalPonction = sumPension[i]-(sumCotisation[i]+sumCroissance[i]);
+  }
+//   sumCroissance[0] = sumCotisation[0]*croissance;
+
+//   console.log("profileType: salRef-sumCotisation-sumCroissance-sumPension-croissance-age0", salRef, sumCotisation, sumCroissance, sumPension, croissance, age0, result)
   return result;
 };

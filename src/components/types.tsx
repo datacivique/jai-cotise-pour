@@ -120,6 +120,9 @@ export type SalaireEntry = {
 }
 export type ProfilType = {
   name: string;
+  totalCotisation: number;
+  totalFinance: number;
+  totalPonction: number;
   salaires: SalaireEntry[];
 }
 
@@ -131,9 +134,9 @@ export const partMasseSalTop10_2021: number = 28.56;
 export const txSalMensToPmss: number = 0.0011;
 export const txTcToEqtp: number = 0.00982942821823;
 
-export const projectionBaseSalMoy: number = 1.5;
-export const projectionBaseInflation: number = 1.6;
-export const projectionBasePib: number = 3;
+export const projectionBaseSalMoy: number = 2.25;
+export const projectionBaseInflation: number = 1.8;
+export const projectionBasePib: number = 3.5;
 
 export const salaireMensMoyBrut2025: number = 3602;
 export const salaireMensMoyNet2025: number = 2733;

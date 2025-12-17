@@ -34,10 +34,10 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
   const ticks = Array.from({ length: maxTick / 1000 + 1 }, (_, i) => i * 1000);
   const salaireRef = GetSalRef(profilType.salaires)*salaireMensMoyBrut2025;
 
-  const { chartData } = useMemo(() => {
+const { chartData, totaux } = useMemo(() => {
     const salaires = profilType.salaires;
     if (!salaires || salaires.length === 0) {
-      return { chartData: [], salaireMoyen: 1 };
+      return { chartData: [], salaireMoyen: 1, totaux: { cotisation: 0, cotise: 0, finance: 0, ponctionne: 0, pension: 0 } };
     }
 
     // Calculer le salaire moyen (en unités relatives, normalisé autour de 1)
@@ -46,19 +46,15 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
       ? salaireEntries.reduce((sum, s) => sum + (s.salaire || 0), 0) / salaireEntries.length
       : 1;
 
+      var sumCotisation = profilType.totalCotisation;
+      var sumCotise = profilType.totalCotisation;
+      var sumFinance = profilType.totalFinance;
+      var sumPonctionne = profilType.totalPonction;
+      var sumPension = profilType.totalCotisation+profilType.totalFinance+profilType.totalPonction;
+      var sumTotal = profilType.totalCotisation+profilType.totalFinance+profilType.totalPonction;
+
     // Transformer les données en euros
     const chartData = salaires.map(s => {
-      let pensionType = '';
-      if (s.pension) {
-        if (s.cotise && s.cotise > 0) {
-          pensionType = 'cotisé';
-        } else if (s.finance && s.finance > 0) {
-          pensionType = 'financé';
-        } else {
-          pensionType = 'ponctionné';
-        }
-      }
-
       // Conversion en euros (règle de 3: valeur_relative * salaireMensMoyBrut2025)
       return {
         annee: s.annee,
@@ -66,16 +62,25 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
         net: s.net ? s.net * salaireMensMoyBrut2025 : null,
         cotisation: s.cotisation ? s.cotisation * salaireMensMoyBrut2025 : null,
         pension: s.pension ? s.pension * salaireMensMoyBrut2025 : null,
-        pensionCotise: (s.pension && s.cotise && s.cotise > 0) ? s.pension * salaireMensMoyBrut2025 : null,
-        pensionFinance: (s.pension && s.finance && s.finance > 0) ? s.pension * salaireMensMoyBrut2025 : null,
-        pensionPonctionne: (s.pension && s.ponctionne && s.ponctionne > 0) ? s.pension * salaireMensMoyBrut2025 : null,
-        pensionType,
+        pensionCotise: s.cotise ? s.cotise * salaireMensMoyBrut2025 : null,
+        pensionFinance: s.finance ? s.finance * salaireMensMoyBrut2025 : null,
+        pensionPonctionne: s.ponctionne ? s.ponctionne * salaireMensMoyBrut2025 : null,
         event: s.commentaire || '',
         hasEvent: !!s.commentaire
       };
     });
 
-    return { chartData, salaireMoyen };
+    const totaux = {
+      cotisation: sumCotisation * 12,
+      cotise: sumCotise * 12,
+      finance: sumFinance * 12,
+      ponctionne: sumPonctionne * 12,
+      pension: sumPension * 12
+    };
+
+    // console.log(totaux)
+
+    return { chartData, salaireMoyen, totaux };
   }, [profilType]);
 
   if (chartData.length === 0) {
@@ -103,15 +108,6 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
             <>
               <p className="text-red-600">Pension brute: {data.pension.toFixed(0)} €</p>
               <p className="text-grey">Pension nette: {data.net.toFixed(0)} €</p>
-              {data.pensionType === 'cotisé' && (
-                <p className="text-green-600 font-semibold mt-1">Type: Cotisé</p>
-              )}
-              {data.pensionType === 'financé' && (
-                <p className="text-purple-600 font-semibold mt-1">Type: Financé</p>
-              )}
-              {data.pensionType === 'ponctionné' && (
-                <p className="text-red-600 font-semibold mt-1">Type: Ponctionné</p>
-              )}
             </>
           )}
           {data.event && (
@@ -169,7 +165,7 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
           ))}
         </div>
       </div>
-      <p className="px-6 py-4 text-gray-600 text-sm mt-1">Montants exprimés en euros 2025, indexés sur le salaire moyen afin de refléter l’effort contributif dans le temps.</p>
+      <p className="px-6 py-4 text-gray-600 text-sm mt-1">Montants exprimés en euros 2025, indexés sur le salaire moyen afin de refléter l'effort contributif dans le temps.</p>
       <ResponsiveContainer width="100%" height={500}>
         <ComposedChart
           data={chartData}
@@ -248,7 +244,7 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
             stroke="#6b7280"
             strokeDasharray="5 5"
             strokeWidth={2}
-            label={{ value: `Salaire moyen brut ${formatNum(salaireMensMoyBrut2025, 0, "€")}`, position: 'insideBottomRight', fill: '#6b7280', fontSize: 12 }}
+            label={{ value: `Salaire moyen brut (${formatNum(salaireMensMoyBrut2025, 0, "€")} en 2025)`, position: 'insideBottomRight', fill: '#6b7280', fontSize: 12 }}
           />
           
           {/* Ligne de référence pour le salaire de référence */}
@@ -257,7 +253,7 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
             stroke="#3b82f6"
             strokeDasharray="5 5"
             strokeWidth={2}
-            label={{ value: `Salaire de référence brut ${formatNum(salaireRef, 0, "€")}`, position: 'insideBottomRight', fill: '#3b82f6', fontSize: 12 }}
+            label={{ value: `Salaire de référence brut (${formatNum(salaireRef, 0, "€")})`, position: 'insideBottomRight', fill: '#3b82f6', fontSize: 12 }}
           />
           
           {/* Ligne de cotisation (sans remplissage) */}
@@ -284,6 +280,7 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
           <Area
             type="monotone"
             dataKey="pensionCotise"
+            stackId="pension"
             stroke="#10b981"
             strokeWidth={2}
             fill="url(#colorPensionCotise)"
@@ -295,6 +292,7 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
           <Area
             type="monotone"
             dataKey="pensionFinance"
+            stackId="pension"
             stroke="#a855f7"
             strokeWidth={2}
             fill="url(#colorPensionFinance)"
@@ -306,6 +304,7 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
           <Area
             type="monotone"
             dataKey="pensionPonctionne"
+            stackId="pension"
             stroke="#ef4444"
             strokeWidth={2}
             fill="url(#colorPensionPonctionne)"
@@ -375,7 +374,16 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
           <span className="text-gray-700">Événement</span>
         </div>
       </div>
-      <br />
+
+<p className="px-6 py-4 text-gray-700 text-sm mt-1 italic">
+  (*) Les <span className="text-blue-600 font-semibold">"Cotisations payées"</span> (<span className="underline decoration-blue-600 decoration-2">{formatNum(totaux.cotisation * salaireMensMoyBrut2025, 0, "€")}</span> = {formatNum(totaux.cotise, 0, "salaires moyens")}) représentent l'ensemble des cotisations retraite réellement versées durant la carrière. 
+  La <span className="text-green-600 font-semibold">"Pension cotisée"</span> (<span className="underline decoration-green-600 decoration-2">{formatNum(totaux.cotisation * salaireMensMoyBrut2025, 0, "€")}</span> = {formatNum(totaux.cotisation, 0, "salaires moyens")}) correspond à la part de la pension directement financée par ces cotisations personnelles. 
+  La <span className="text-purple-600 font-semibold">"Pension financée"</span> (<span className="underline decoration-purple-600 decoration-2">{formatNum(totaux.finance * salaireMensMoyBrut2025, 0, "€")}</span> = {formatNum(totaux.finance, 0, "salaires moyens")}) est l'apport du système par répartition grâce à la croissance démographique et économique. 
+  La <span className="text-red-600 font-semibold">"Pension ponctionnée"</span> (<span className="underline decoration-red-600 decoration-2">{formatNum(totaux.ponctionne * salaireMensMoyBrut2025, 0, "€")}</span> = {formatNum(totaux.ponctionne, 0, "salaires moyens")}) mesure l'effort de solidarité fourni par la génération active pour couvrir la part non autofinancée de la pension. 
+  <br/>Le total des pensions perçues s'élève à <span className="underline decoration-gray-600 decoration-2">{formatNum(totaux.pension * salaireMensMoyBrut2025, 0, "€")}</span> = {formatNum(totaux.pension, 0, "salaires moyens")}.
+  <br /><br />
+  Tous les montants sont exprimés en <strong>euros 2025 indexés sur le salaire moyen</strong>. Chaque cotisation et pension est d'abord calculée en proportion du salaire moyen de son année, puis convertie en euros 2025 via le salaire moyen brut de référence ({formatNum(salaireMensMoyBrut2025, 0, "€")}/mois). Cette méthode permet de mesurer l'effort contributif relatif à chaque époque, indépendamment de l'inflation et de la croissance économique.
+</p>
     </div>
   );
 };

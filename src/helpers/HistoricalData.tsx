@@ -21,6 +21,8 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
   var pib2= 0;
   var sal1= 0;
   var sal2= 0;
+  var txCotisMoy = 0;
+  var txPensMoy = 0;
   
   step = "calcul des projections";
   // Recréer les nouvelles projections
@@ -82,6 +84,7 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
     d.sumtotalCnavPlafondEnSalMoyCroissMasSal = 0;
   };
 
+  // console.log("esperanceVie", esperanceVie, param.retirementAge + data[iSimulation].dureeVieEnRetraite)
   esperanceVie = param.retirementAge + data[iSimulation].dureeVieEnRetraite;
   var ageRetraite = param.retirementAge;
   var ageTravail = param.retirementAge - (param.cotisationDuration/4);
@@ -189,6 +192,8 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
       data[iSimulation].sumtotalCnavHorsPlafondEnSalMoy = d.sumtotalCnavHorsPlafondEnSalMoy;
       data[iSimulation].sumtotalCnavPlafondEnSalMoyCroissMasSal = d.sumtotalCnavPlafondEnSalMoyCroissMasSal;
       data[iSimulation].sumtotalCnavHorsPlafondEnSalMoyCroissMasSal = d.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal;
+
+      txCotisMoy += (changeNaN(d.txCnavPlafond) + changeNaN(d.txCnavSalaire));
     }
 
     // Si retraite dans l'année
@@ -202,6 +207,7 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
         ajustInflation = d.inflationMoinsCroissanceSalMoy + (ajustInflation/100);
         d.pensionMensEnSalMoy = d0.pensionMensEnSalMoy * (1 + ajustInflation);
       }
+      // console.log(d.year, d.pensionMensEnSalMoy, d.inflationMoinsCroissanceSalMoy)
       
       d.sumtotalCnavPlafondEnSalMoy=d0.sumtotalCnavPlafondEnSalMoy;
       d.sumtotalCnavHorsPlafondEnSalMoy=d0.sumtotalCnavHorsPlafondEnSalMoy;
@@ -216,12 +222,19 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
 
       d.sumpensionMensEnSalMoy=d0.sumpensionMensEnSalMoy+d.pensionEnSalMoy;
       data[iSimulation].sumpensionMensEnSalMoy = d.sumpensionMensEnSalMoy;
+
+      txPensMoy += d.pensionMensEnSalMoy;
+      // console.log(d.age, d0.sumpensionMensEnSalMoy, d.pensionEnSalMoy)
     }
   }
+
+  
   data[iSimulation].dureeCotisation = param.cotisationDuration;
   // console.log(pib1, pib2, sal1, sal2)
-  // console.log(data[iSimulation])
-    // console.log(data[iSimulation].year, data[iSimulation].sumtotalCnavPlafondEnSalMoy, data[iSimulation].sumtotalCnavPlafondEnSalMoyCroissMasSal, data[iSimulation].sumpensionMensEnSalMoy)
+  // // console.log(data[iSimulation])
+  //   console.log(data[iSimulation], data[iSimulation].sumtotalCnavPlafondEnSalMoy+data[iSimulation].sumtotalCnavHorsPlafondEnSalMoy, 
+  //     data[iSimulation].sumtotalCnavPlafondEnSalMoyCroissMasSal+data[iSimulation].sumtotalCnavHorsPlafondEnSalMoyCroissMasSal, 
+  //     data[iSimulation].sumpensionMensEnSalMoy)
   } catch (err) {
     console.log("Error " + step +".", err);
   }
