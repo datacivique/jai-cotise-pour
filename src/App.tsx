@@ -132,6 +132,7 @@ const RetirementSimulation = () => {
   totalCotisation: 0,
   totalFinance: 0,
   totalPonction: 0,
+  naissance: 0,
     }
   }
 

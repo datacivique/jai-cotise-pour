@@ -30,7 +30,8 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
   }
   const age0 = historicalData[iAge0];
   var duree = Math.round(age0.dureeCotisation / 4);
-  var croissance = 1-((age0.sumtotalCnavPlafondEnSalMoy+age0.sumtotalCnavHorsPlafondEnSalMoy)/(age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal))
+  var firstYear = Math.round(age0.year+age0.ageRetraite-duree);
+//   var croissance = 1-((age0.sumtotalCnavPlafondEnSalMoy+age0.sumtotalCnavHorsPlafondEnSalMoy)/(age0.sumtotalCnavPlafondEnSalMoyCroissMasSal+age0.sumtotalCnavHorsPlafondEnSalMoyCroissMasSal))
 
     var salRef: number[] = [0, 0, 0, 0];
     var prevComShown: boolean[] = [false, false, false, false];
@@ -41,6 +42,7 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
     totalCotisation: 0,
     totalFinance: 0,
     totalPonction: 0,
+    naissance: age0.year,
   }));
 
   // nombre de points dans la base (ex: 40 lignes)
@@ -56,7 +58,7 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
     var sumCroissance: number[] = [1, 1, 1, 1];
     var sumPension: number[] = [0, 0, 0, 0];
 
-  for (let year = 1; year <= duree+age0.dureeVieEnRetraite; year++) {
+  for (let year = 0; year <= duree+age0.dureeVieEnRetraite; year++) {
 
     // Add retraite
     if (year > duree) {
@@ -70,7 +72,7 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
         sumPension[pIndex] += pension;
         
         result[pIndex].salaires.push({
-            annee: year,
+            annee: year+firstYear,
             cotisation: 0,
             salaire: 0,
             commentaire:(profil== undefined ? "1" : ""),
@@ -167,7 +169,7 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
         //  if (profil.name == "Ouvrier") console.log(year, taf, interpolatedSalaire);
 
         result[pIndex].salaires.push({
-            annee: year,
+            annee: year+firstYear,
             cotisation: cotisation,
             salaire: interpolatedSalaire,
             commentaire,
@@ -203,7 +205,6 @@ export const GetProfils = (profilsBase: ProfilType[], historicalData: Historical
     result[i].totalPonction = sumPension[i]-(sumCotisation[i]+sumCroissance[i]);
   }
 //   sumCroissance[0] = sumCotisation[0]*croissance;
-
 //   console.log("profileType: salRef-sumCotisation-sumCroissance-sumPension-croissance-age0", salRef, sumCotisation, sumCroissance, sumPension, croissance, age0, result)
   return result;
 };

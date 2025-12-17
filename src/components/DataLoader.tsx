@@ -151,10 +151,34 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
         
         // Construction des 4 profils
         const profilsBase: ProfilType[] = [
-          { name: 'Ouvrier', salaires: [] },
-          { name: 'Employe de bureau', salaires: [] },
-          { name: 'Cadre', salaires: [] },
-          { name: 'Profession Intermediaire', salaires: [] },
+          {
+            name: 'Ouvrier', salaires: [],
+            totalCotisation: 0,
+            totalFinance: 0,
+            totalPonction: 0,
+            naissance: 0,
+          },
+          {
+            name: 'Employe de bureau', salaires: [],
+            totalCotisation: 0,
+            totalFinance: 0,
+            totalPonction: 0,
+            naissance: 0,
+          },
+          {
+            name: 'Cadre', salaires: [],
+            totalCotisation: 0,
+            totalFinance: 0,
+            totalPonction: 0,
+            naissance: 0,
+          },
+          {
+            name: 'Profession Intermediaire', salaires: [],
+            totalCotisation: 0,
+            totalFinance: 0,
+            totalPonction: 0,
+            naissance: 0,
+          },
         ];
         profilsRows.forEach((row: any) => {
         profilsBase[0].salaires.push({
@@ -166,6 +190,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           cotise: 0,
           finance: 0,
           ponctionne: 0,
+          net: 0,
         });
         profilsBase[1].salaires.push({
           annee: parseFloat(row['pctAvancement']),
@@ -176,6 +201,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           cotise: 0,
           finance: 0,
           ponctionne: 0,
+          net: 0,
         });
         profilsBase[2].salaires.push({
           annee: parseFloat(row['pctAvancement']),
@@ -186,6 +212,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           cotise: 0,
           finance: 0,
           ponctionne: 0,
+          net: 0,
         });
         profilsBase[3].salaires.push({
           annee: parseFloat(row['pctAvancement']),
@@ -196,6 +223,7 @@ const DataLoader: React.FC<DataLoaderProps> = ({ onDataLoaded }) => {
           cotise: 0,
           finance: 0,
           ponctionne: 0,
+          net: 0,
         });
       });
 

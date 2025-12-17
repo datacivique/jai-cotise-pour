@@ -34,6 +34,8 @@ const ProfilChart: React.FC<ProfilChartProps> = ({ profilType }) => {
   const ticks = Array.from({ length: maxTick / 1000 + 1 }, (_, i) => i * 1000);
   const salaireRef = GetSalRef(profilType.salaires)*salaireMensMoyBrut2025;
 
+  const anneeNaissance = profilType.naissance;
+
 const { chartData, totaux } = useMemo(() => {
     const salaires = profilType.salaires;
     if (!salaires || salaires.length === 0) {
@@ -51,7 +53,7 @@ const { chartData, totaux } = useMemo(() => {
       var sumFinance = profilType.totalFinance;
       var sumPonctionne = profilType.totalPonction;
       var sumPension = profilType.totalCotisation+profilType.totalFinance+profilType.totalPonction;
-      var sumTotal = profilType.totalCotisation+profilType.totalFinance+profilType.totalPonction;
+      // var sumTotal = profilType.totalCotisation+profilType.totalFinance+profilType.totalPonction;
 
     // Transformer les données en euros
     const chartData = salaires.map(s => {
@@ -96,7 +98,7 @@ const { chartData, totaux } = useMemo(() => {
       const data = payload[0].payload;
       return (
         <div className="bg-white/95 backdrop-blur-sm p-3 rounded-lg shadow-xl border border-gray-300">
-          <p className="font-bold text-gray-800 mb-2">Année {data.annee}</p>
+          <p className="text-gray-800 mb-2"><span className="font-bold">Année {data.annee}</span> <span className="italic">({data.annee-anneeNaissance} ans)</span></p>
           {data.salaire && (
             <>
               <p className="text-blue-600">Salaire brut: {data.salaire.toFixed(0)} €</p>

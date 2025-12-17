@@ -1,5 +1,5 @@
 import { txSalMensToPmss, type HistoricalData, type SalaryInfo, type SimulationParams } from "../components/types";
-import { changeNaN, getAge0 } from "./Common";
+import { changeNaN } from "./Common";
 
 // Calcul le profil de contribution/prestation
 export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationParams, salaryInfo: SalaryInfo) => {
@@ -17,10 +17,10 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
 
   var maxI = data.length - 1;  
 
-  var pib1= 0;
-  var pib2= 0;
-  var sal1= 0;
-  var sal2= 0;
+  // var pib1= 0;
+  // var pib2= 0;
+  // var sal1= 0;
+  // var sal2= 0;
   var txCotisMoy = 0;
   var txPensMoy = 0;
   
@@ -150,7 +150,7 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
     
     // Si travail dans l'année
     if (d.t1.isCotised || d.t4.isCotised) {
-      if (pib1 == 0) { pib1 = d.masseSalarialeBrutPrive; sal1 = d.salMoyNetMens;}
+      // if (pib1 == 0) { pib1 = d.masseSalarialeBrutPrive; sal1 = d.salMoyNetMens;}
       // if (sal1 == 0 || sal2 == 0) console.log("test")
       d.croissanceMasseSalarialePriveBrutCumule = d0.croissanceMasseSalarialePriveBrutCumule*(1+(d.croissanceMasseSalarialePriveBrut / 100));
       if (data[iSimulation].year == 1999 || data[iSimulation].year == 2000) {
@@ -198,7 +198,7 @@ export const UpdateHistoricalData = (data: HistoricalData[], param: SimulationPa
 
     // Si retraite dans l'année
     if (d.t1.isRetired || d.t4.isRetired) {
-      if (pib2 == 0) { pib2 = d.masseSalarialeBrutPrive; sal2 = d.salMoyNetMens;}
+      // if (pib2 == 0) { pib2 = d.masseSalarialeBrutPrive; sal2 = d.salMoyNetMens;}
       if (d0.pensionMensEnSalMoy == 0) {
         d.pensionMensEnSalMoy = 50; // la pension mensuelle à taux plein la premiere année est 50% de l'unité
       } else {

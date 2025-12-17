@@ -120,6 +120,7 @@ export type SalaireEntry = {
 }
 export type ProfilType = {
   name: string;
+  naissance: number;
   totalCotisation: number;
   totalFinance: number;
   totalPonction: number;
